@@ -1,0 +1,6 @@
+name: weather.gov
+auth: UserAgent
+auth-schemes:
+  UserAgent:
+    header: User-Agent
+    type: string

@@ -1,0 +1,4737 @@
+types:
+  Alert:
+    docs: >
+      An object representing a public alert message.
+
+      Unless otherwise noted, the fields in this object correspond to the
+      National Weather Service CAP v1.2 specification, which extends the OASIS
+      Common Alerting Protocol (CAP) v1.2 specification and USA Integrated
+      Public Alert and Warning System (IPAWS) Profile v1.0. Refer to this
+      documentation for more complete information.
+
+      http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.html
+      http://docs.oasis-open.org/emergency/cap/v1.2/ipaws-profile/v1.0/cs01/cap-v1.2-ipaws-profile-cs01.html
+      https://alerts.weather.gov/#technical-notes-v12
+    properties:
+      affectedZones:
+        docs: >
+          An array of API links for zones affected by the alert. This is an
+          API-specific extension field and is not part of the CAP specification.
+        type: optional<list<string>>
+      areaDesc:
+        docs: A textual description of the area affected by the alert.
+        type: optional<string>
+      category:
+        docs: >-
+          The code denoting the category of the subject event of the alert
+          message.
+        type: optional<AlertCategory>
+      certainty: optional<AlertCertainty>
+      description:
+        docs: The text describing the subject event of the alert message.
+        type: optional<string>
+      effective:
+        docs: The effective time of the information of the alert message.
+        type: optional<datetime>
+      ends:
+        docs: The expected end time of the subject event of the alert message.
+        type: optional<datetime>
+      event:
+        docs: The text denoting the type of the subject event of the alert message.
+        type: optional<string>
+      expires:
+        docs: The expiry time of the information of the alert message.
+        type: optional<datetime>
+      geocode:
+        docs: >-
+          Lists of codes for NWS public zones and counties affected by the
+          alert.
+        type: optional<AlertGeocode>
+      headline:
+        docs: The text headline of the alert message.
+        type: optional<string>
+      id: optional<AlertId>
+      instruction:
+        docs: >
+          The text describing the recommended action to be taken by recipients
+          of the alert message.
+        type: optional<string>
+      messageType: optional<AlertMessageType>
+      onset:
+        docs: >-
+          The expected time of the beginning of the subject event of the alert
+          message.
+        type: optional<datetime>
+      parameters:
+        docs: >
+          System-specific additional parameters associated with the alert
+          message.
+
+          The keys in this object correspond to parameter definitions in the NWS
+          CAP specification.
+        type: optional<map<string, list<unknown>>>
+      references:
+        docs: A list of prior alerts that this alert updates or replaces.
+        type: optional<list<AlertReferencesItem>>
+      response:
+        docs: >
+          The code denoting the type of action recommended for the target
+          audience.
+
+          This corresponds to responseType in the CAP specification.
+        type: optional<AlertResponse>
+      sender:
+        docs: Email address of the NWS webmaster.
+        type: optional<string>
+      senderName:
+        docs: The text naming the originator of the alert message.
+        type: optional<string>
+      sent:
+        docs: The time of the origination of the alert message.
+        type: optional<datetime>
+      severity: optional<AlertSeverity>
+      status: optional<AlertStatus>
+      urgency: optional<AlertUrgency>
+    source:
+      openapi: openapi/openapi.yml
+  AlertAtomEntry:
+    docs: An alert entry in an Atom feed
+    properties:
+      areaDesc: optional<string>
+      author: optional<AlertAtomEntryAuthor>
+      category: optional<string>
+      certainty: optional<string>
+      effective: optional<string>
+      event: optional<string>
+      expires: optional<string>
+      geocode: optional<list<AlertXmlParameter>>
+      id: optional<string>
+      msgType: optional<string>
+      parameter: optional<list<AlertXmlParameter>>
+      polygon: optional<string>
+      published: optional<string>
+      sent: optional<string>
+      severity: optional<string>
+      status: optional<string>
+      summary: optional<string>
+      updated: optional<string>
+      urgency: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  AlertAtomEntryAuthor:
+    inline: true
+    properties:
+      name: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  AlertAtomFeed:
+    docs: An alert feed in Atom format
+    properties:
+      author: optional<AlertAtomFeedAuthor>
+      entry: optional<list<AlertAtomEntry>>
+      generator: optional<string>
+      id: optional<string>
+      title: optional<string>
+      updated: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  AlertAtomFeedAuthor:
+    inline: true
+    properties:
+      name: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  AlertCap: map<string, unknown>
+  AlertCategory:
+    docs: The code denoting the category of the subject event of the alert message.
+    enum:
+      - Met
+      - Geo
+      - Safety
+      - Security
+      - Rescue
+      - Fire
+      - Health
+      - Env
+      - Transport
+      - Infra
+      - CBRNE
+      - Other
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  AlertCertainty:
+    enum:
+      - Observed
+      - Likely
+      - Possible
+      - Unlikely
+      - Unknown
+    source:
+      openapi: openapi/openapi.yml
+  AlertCollection:
+    properties:
+      pagination: optional<PaginationInfo>
+      title:
+        docs: A title describing the alert collection
+        type: optional<string>
+      updated:
+        docs: The last time a change occurred to this collection
+        type: optional<datetime>
+    source:
+      openapi: openapi/openapi.yml
+  AlertCollectionGeoJson:
+    extends:
+      - AlertCollection
+    properties:
+      '@context': optional<JsonLdContext>
+      features: optional<list<AlertCollectionGeoJsonFeaturesItem>>
+      type: literal<"FeatureCollection">
+    source:
+      openapi: openapi/openapi.yml
+  AlertCollectionGeoJsonFeaturesItem:
+    inline: true
+    properties:
+      properties: optional<Alert>
+    source:
+      openapi: openapi/openapi.yml
+  AlertCollectionJsonLd:
+    extends:
+      - AlertCollection
+    properties:
+      '@context': optional<JsonLdContext>
+      '@graph': optional<list<Alert>>
+    source:
+      openapi: openapi/openapi.yml
+  AlertGeocode:
+    docs: Lists of codes for NWS public zones and counties affected by the alert.
+    inline: true
+    properties:
+      SAME:
+        docs: >-
+          A list of SAME (Specific Area Message Encoding) codes for affected
+          counties.
+        type: optional<list<string>>
+      UGC:
+        docs: A list of NWS public zone or county identifiers.
+        type: optional<list<NwsZoneId>>
+    source:
+      openapi: openapi/openapi.yml
+  AlertGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<Alert>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  AlertId:
+    docs: The identifier of the alert message.
+    type: string
+  AlertJsonLd:
+    properties:
+      '@graph': optional<list<Alert>>
+    source:
+      openapi: openapi/openapi.yml
+  AlertMessageType:
+    enum:
+      - Alert
+      - Update
+      - Cancel
+      - Ack
+      - Error
+    source:
+      openapi: openapi/openapi.yml
+  AlertReferencesItem:
+    inline: true
+    properties:
+      '@id':
+        docs: An API link to the prior alert.
+        type: optional<string>
+        validation:
+          format: uri
+      identifier: optional<AlertId>
+      sender:
+        docs: The sender of the prior alert.
+        type: optional<string>
+      sent:
+        docs: The time the prior alert was sent.
+        type: optional<datetime>
+    source:
+      openapi: openapi/openapi.yml
+  AlertResponse:
+    docs: |
+      The code denoting the type of action recommended for the target audience.
+      This corresponds to responseType in the CAP specification.
+    enum:
+      - Shelter
+      - Evacuate
+      - Prepare
+      - Execute
+      - Avoid
+      - Monitor
+      - Assess
+      - AllClear
+      - None
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  AlertsActiveCountResponse:
+    properties:
+      areas:
+        docs: Active alerts by area (state/territory)
+        type: optional<map<string, integer>>
+      land:
+        docs: The total number of active alerts affecting land zones
+        type: optional<integer>
+        validation:
+          min: 0
+      marine:
+        docs: The total number of active alerts affecting marine zones
+        type: optional<integer>
+        validation:
+          min: 0
+      regions:
+        docs: Active alerts by marine region
+        type: optional<map<string, integer>>
+      total:
+        docs: The total number of active alerts
+        type: optional<integer>
+        validation:
+          min: 0
+      zones:
+        docs: Active alerts by NWS public zone or county code
+        type: optional<map<string, integer>>
+    source:
+      openapi: openapi/openapi.yml
+  AlertsActiveRequestMessageTypeItem:
+    enum:
+      - alert
+      - update
+      - cancel
+    source:
+      openapi: openapi/openapi.yml
+  AlertsActiveRequestRegionType:
+    enum:
+      - land
+      - marine
+    source:
+      openapi: openapi/openapi.yml
+  AlertsActiveRequestStatusItem:
+    enum:
+      - actual
+      - exercise
+      - system
+      - test
+      - draft
+    source:
+      openapi: openapi/openapi.yml
+  AlertSeverity:
+    enum:
+      - Extreme
+      - Severe
+      - Moderate
+      - Minor
+      - Unknown
+    source:
+      openapi: openapi/openapi.yml
+  AlertsQueryRequestMessageTypeItem:
+    enum:
+      - alert
+      - update
+      - cancel
+    source:
+      openapi: openapi/openapi.yml
+  AlertsQueryRequestRegionType:
+    enum:
+      - land
+      - marine
+    source:
+      openapi: openapi/openapi.yml
+  AlertsQueryRequestStatusItem:
+    enum:
+      - actual
+      - exercise
+      - system
+      - test
+      - draft
+    source:
+      openapi: openapi/openapi.yml
+  AlertStatus:
+    enum:
+      - Actual
+      - Exercise
+      - System
+      - Test
+      - Draft
+    source:
+      openapi: openapi/openapi.yml
+  AlertsTypesResponse:
+    properties:
+      eventTypes:
+        docs: A list of recognized event types
+        type: optional<list<string>>
+    source:
+      openapi: openapi/openapi.yml
+  AlertUrgency:
+    enum:
+      - Immediate
+      - Expected
+      - Future
+      - Past
+      - Unknown
+    source:
+      openapi: openapi/openapi.yml
+  AlertXmlParameter:
+    properties:
+      value: optional<string>
+      valueName: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  AreaCode:
+    discriminated: false
+    docs: State/territory codes and marine area codes
+    source:
+      openapi: openapi/openapi.yml
+    union:
+      - StateTerritoryCode
+      - MarineAreaCode
+  AtsuIdentifier:
+    docs: ATSU Identifier
+    type: string
+    validation:
+      pattern: ^[A-Z]{3,4}$
+  BinaryFile:
+    type: string
+    validation:
+      format: binary
+  CenterWeatherAdvisory:
+    properties:
+      cwsu: optional<NwsCenterWeatherServiceUnitId>
+      end: optional<datetime>
+      id: optional<string>
+      issueTime: optional<datetime>
+      observedProperty: optional<string>
+      sequence:
+        type: optional<integer>
+        validation:
+          min: 101
+      start: optional<datetime>
+      text: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  CenterWeatherAdvisoryCollectionGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      features: optional<list<CenterWeatherAdvisoryCollectionGeoJsonFeaturesItem>>
+      type: literal<"FeatureCollection">
+    source:
+      openapi: openapi/openapi.yml
+  CenterWeatherAdvisoryCollectionGeoJsonFeaturesItem:
+    inline: true
+    properties:
+      properties: optional<CenterWeatherAdvisory>
+    source:
+      openapi: openapi/openapi.yml
+  CenterWeatherAdvisoryGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<CenterWeatherAdvisory>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  CenterWeatherServiceUnitJsonLd: Office
+  Date:
+    docs: Date (in YYYY-MM-DD format).
+    type: string
+    validation:
+      format: date
+  GeoJsonBoundingBox:
+    docs: >-
+      A GeoJSON bounding box. Please refer to IETF RFC 7946 for information on
+      the GeoJSON format.
+    type: list<double>
+  GeoJsonCoordinate:
+    docs: >-
+      A GeoJSON coordinate. Please refer to IETF RFC 7946 for information on the
+      GeoJSON format.
+    type: list<double>
+  GeoJsonFeature:
+    docs: >-
+      A GeoJSON feature. Please refer to IETF RFC 7946 for information on the
+      GeoJSON format.
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: map<string, unknown>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  GeoJsonFeatureCollection:
+    docs: >-
+      A GeoJSON feature collection. Please refer to IETF RFC 7946 for
+      information on the GeoJSON format.
+    properties:
+      '@context': optional<JsonLdContext>
+      features: list<GeoJsonFeature>
+      type: literal<"FeatureCollection">
+    source:
+      openapi: openapi/openapi.yml
+  GeoJsonGeometry:
+    base-properties: {}
+    discriminant: type
+    docs: >-
+      A GeoJSON geometry object. Please refer to IETF RFC 7946 for information
+      on the GeoJSON format.
+    source:
+      openapi: openapi/openapi.yml
+    union:
+      LineString:
+        type: GeoJsonGeometryLineString
+      MultiLineString:
+        type: GeoJsonGeometryMultiLineString
+      MultiPoint:
+        type: GeoJsonGeometryMultiPoint
+      MultiPolygon:
+        type: GeoJsonGeometryMultiPolygon
+      Point:
+        type: GeoJsonGeometryPoint
+      Polygon:
+        type: GeoJsonGeometryPolygon
+  GeoJsonGeometryLineString:
+    inline: true
+    properties:
+      bbox:
+        type: optional<GeoJsonBoundingBox>
+      coordinates: GeoJsonLineString
+    source:
+      openapi: openapi/openapi.yml
+  GeoJsonGeometryMultiLineString:
+    inline: true
+    properties:
+      bbox:
+        type: optional<GeoJsonBoundingBox>
+      coordinates: list<GeoJsonLineString>
+    source:
+      openapi: openapi/openapi.yml
+  GeoJsonGeometryMultiPoint:
+    inline: true
+    properties:
+      bbox:
+        type: optional<GeoJsonBoundingBox>
+      coordinates: list<GeoJsonCoordinate>
+    source:
+      openapi: openapi/openapi.yml
+  GeoJsonGeometryMultiPolygon:
+    inline: true
+    properties:
+      bbox:
+        type: optional<GeoJsonBoundingBox>
+      coordinates: list<GeoJsonPolygon>
+    source:
+      openapi: openapi/openapi.yml
+  GeoJsonGeometryPoint:
+    inline: true
+    properties:
+      bbox:
+        type: optional<GeoJsonBoundingBox>
+      coordinates: GeoJsonCoordinate
+    source:
+      openapi: openapi/openapi.yml
+  GeoJsonGeometryPolygon:
+    inline: true
+    properties:
+      bbox:
+        type: optional<GeoJsonBoundingBox>
+      coordinates: GeoJsonPolygon
+    source:
+      openapi: openapi/openapi.yml
+  GeoJsonLineString:
+    docs: >-
+      A GeoJSON line string. Please refer to IETF RFC 7946 for information on
+      the GeoJSON format.
+    type: list<GeoJsonCoordinate>
+  GeoJsonPolygon:
+    docs: >-
+      A GeoJSON polygon. Please refer to IETF RFC 7946 for information on the
+      GeoJSON format.
+    type: list<list<GeoJsonCoordinate>>
+  GeometryString:
+    docs: A geometry represented in Well-Known Text (WKT) format.
+    type: optional<string>
+  GlossaryResponse:
+    properties:
+      '@context': optional<JsonLdContext>
+      glossary:
+        docs: A list of glossary terms
+        type: optional<list<GlossaryResponseGlossaryItem>>
+    source:
+      openapi: openapi/openapi.yml
+  GlossaryResponseGlossaryItem:
+    inline: true
+    properties:
+      definition:
+        docs: A definition for the term
+        type: optional<string>
+      term:
+        docs: The term being defined
+        type: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  Gridpoint:
+    docs: >
+      Raw forecast data for a 2.5km grid square.
+
+      This is a list of all potential data layers that may appear. Some layers
+      may not be present in all areas.
+
+      * temperature
+
+      * dewpoint
+
+      * maxTemperature
+
+      * minTemperature
+
+      * relativeHumidity
+
+      * apparentTemperature
+
+      * heatIndex
+
+      * windChill
+
+      * wetBulbGlobeTemperature
+
+      * skyCover
+
+      * windDirection
+
+      * windSpeed
+
+      * windGust
+
+      * weather
+
+      * hazards: Watch and advisory products in effect
+
+      * probabilityOfPrecipitation
+
+      * quantitativePrecipitation
+
+      * iceAccumulation
+
+      * snowfallAmount
+
+      * snowLevel
+
+      * ceilingHeight
+
+      * visibility
+
+      * transportWindSpeed
+
+      * transportWindDirection
+
+      * mixingHeight
+
+      * hainesIndex
+
+      * lightningActivityLevel
+
+      * twentyFootWindSpeed
+
+      * twentyFootWindDirection
+
+      * waveHeight
+
+      * wavePeriod
+
+      * waveDirection
+
+      * primarySwellHeight
+
+      * primarySwellDirection
+
+      * secondarySwellHeight
+
+      * secondarySwellDirection
+
+      * wavePeriod2
+
+      * windWaveHeight
+
+      * dispersionIndex
+
+      * pressure: Barometric pressure
+
+      * probabilityOfTropicalStormWinds
+
+      * probabilityOfHurricaneWinds
+
+      * potentialOf15mphWinds
+
+      * potentialOf25mphWinds
+
+      * potentialOf35mphWinds
+
+      * potentialOf45mphWinds
+
+      * potentialOf20mphWindGusts
+
+      * potentialOf30mphWindGusts
+
+      * potentialOf40mphWindGusts
+
+      * potentialOf50mphWindGusts
+
+      * potentialOf60mphWindGusts
+
+      * grasslandFireDangerIndex
+
+      * probabilityOfThunder
+
+      * davisStabilityIndex
+
+      * atmosphericDispersionIndex
+
+      * lowVisibilityOccurrenceRiskIndex
+
+      * stability
+
+      * redFlagThreatIndex
+    properties:
+      '@context': optional<JsonLdContext>
+      '@id':
+        type: optional<string>
+        validation:
+          format: uri
+      '@type': optional<literal<"wx:Gridpoint">>
+      elevation: optional<QuantitativeValue>
+      forecastOffice:
+        type: optional<string>
+        validation:
+          format: uri
+      geometry: optional<GeometryString>
+      gridId: optional<string>
+      gridX:
+        type: optional<integer>
+        validation:
+          min: 0
+      gridY:
+        type: optional<integer>
+        validation:
+          min: 0
+      hazards: optional<GridpointHazards>
+      updateTime: optional<datetime>
+      validTimes: optional<Iso8601Interval>
+      weather: optional<GridpointWeather>
+    source:
+      openapi: openapi/openapi.yml
+  GridpointForecast:
+    docs: A multi-day forecast for a 2.5km grid square.
+    properties:
+      '@context': optional<JsonLdContext>
+      elevation: optional<QuantitativeValue>
+      forecastGenerator:
+        docs: >-
+          The internal generator class used to create the forecast text (used
+          for NWS debugging).
+        type: optional<string>
+      generatedAt:
+        docs: The time this forecast data was generated.
+        type: optional<datetime>
+      geometry: optional<GeometryString>
+      periods:
+        docs: An array of forecast periods.
+        type: optional<list<GridpointForecastPeriod>>
+      units: optional<GridpointForecastUnits>
+      updateTime:
+        docs: The last update time of the data this forecast was generated from.
+        type: optional<datetime>
+      validTimes: optional<Iso8601Interval>
+    source:
+      openapi: openapi/openapi.yml
+  GridpointForecastGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<GridpointForecast>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  GridpointForecastHourlyRequestFeatureFlagsItem:
+    enum:
+      - forecast_temperature_qv
+      - forecast_wind_speed_qv
+    source:
+      openapi: openapi/openapi.yml
+  GridpointForecastJsonLd:
+    extends:
+      - GridpointForecast
+    properties: {}
+    source:
+      openapi: openapi/openapi.yml
+  GridpointForecastPeriod:
+    docs: >
+      An object containing forecast information for a specific time period
+      (generally 12-hour or 1-hour).
+    properties:
+      detailedForecast:
+        docs: A detailed textual forecast for the period.
+        type: optional<string>
+      dewpoint: optional<QuantitativeValue>
+      endTime:
+        docs: The ending time that this forecast period is valid for.
+        type: optional<datetime>
+      icon:
+        availability: deprecated
+        docs: A link to an icon representing the forecast summary.
+        type: optional<string>
+        validation:
+          format: uri
+      isDaytime:
+        docs: Indicates whether this period is daytime or nighttime.
+        type: optional<boolean>
+      name:
+        docs: >
+          A textual identifier for the period. This value will not be present
+          for hourly forecasts.
+        type: optional<string>
+      number:
+        docs: Sequential period number.
+        type: optional<integer>
+        validation:
+          min: 1
+      probabilityOfPrecipitation: optional<QuantitativeValue>
+      relativeHumidity: optional<QuantitativeValue>
+      shortForecast:
+        docs: A brief textual forecast summary for the period.
+        type: optional<string>
+      startTime:
+        docs: The starting time that this forecast period is valid for.
+        type: optional<datetime>
+      temperature:
+        docs: >
+          High/low temperature for the period, depending on whether the period
+          is day or night.
+
+          This property as an integer value is deprecated. Future versions will
+          express this value as a quantitative value object. To make use of the
+          future standard format now, set the "forecast_temperature_qv" feature
+          flag on the request.
+        type: optional<GridpointForecastPeriodTemperature>
+      temperatureTrend:
+        docs: >
+          If not null, indicates a non-diurnal temperature trend for the period
+          (either rising temperature overnight, or falling temperature during
+          the day)
+        type: optional<GridpointForecastPeriodTemperatureTrend>
+      temperatureUnit:
+        availability: deprecated
+        docs: >
+          The unit of the temperature value (Fahrenheit or Celsius).
+
+          This property is deprecated. Future versions will indicate the unit
+          within the quantitative value object for the temperature property. To
+          make use of the future standard format now, set the
+          "forecast_temperature_qv" feature flag on the request.
+        type: optional<GridpointForecastPeriodTemperatureUnit>
+      windDirection:
+        docs: >-
+          The prevailing direction of the wind for the period, using a 16-point
+          compass.
+        type: optional<GridpointForecastPeriodWindDirection>
+      windGust:
+        docs: >
+          Peak wind gust for the period.
+
+          This property as an string value is deprecated. Future versions will
+          express this value as a quantitative value object. To make use of the
+          future standard format now, set the "forecast_wind_speed_qv" feature
+          flag on the request.
+        type: optional<GridpointForecastPeriodWindGust>
+      windSpeed:
+        docs: >
+          Wind speed for the period.
+
+          This property as an string value is deprecated. Future versions will
+          express this value as a quantitative value object. To make use of the
+          future standard format now, set the "forecast_wind_speed_qv" feature
+          flag on the request.
+        type: optional<GridpointForecastPeriodWindSpeed>
+    source:
+      openapi: openapi/openapi.yml
+  GridpointForecastPeriodTemperature:
+    discriminated: false
+    docs: >
+      High/low temperature for the period, depending on whether the period is
+      day or night.
+
+      This property as an integer value is deprecated. Future versions will
+      express this value as a quantitative value object. To make use of the
+      future standard format now, set the "forecast_temperature_qv" feature flag
+      on the request.
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+    union:
+      - QuantitativeValue
+      - integer
+  GridpointForecastPeriodTemperatureTrend:
+    docs: >
+      If not null, indicates a non-diurnal temperature trend for the period
+      (either rising temperature overnight, or falling temperature during the
+      day)
+    enum:
+      - rising
+      - falling
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  GridpointForecastPeriodTemperatureUnit:
+    docs: >
+      The unit of the temperature value (Fahrenheit or Celsius).
+
+      This property is deprecated. Future versions will indicate the unit within
+      the quantitative value object for the temperature property. To make use of
+      the future standard format now, set the "forecast_temperature_qv" feature
+      flag on the request.
+    enum:
+      - F
+      - C
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  GridpointForecastPeriodWindDirection:
+    docs: >-
+      The prevailing direction of the wind for the period, using a 16-point
+      compass.
+    enum:
+      - 'N'
+      - NNE
+      - NE
+      - ENE
+      - E
+      - ESE
+      - SE
+      - SSE
+      - S
+      - SSW
+      - SW
+      - WSW
+      - W
+      - WNW
+      - NW
+      - NNW
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  GridpointForecastPeriodWindGust:
+    discriminated: false
+    docs: >
+      Peak wind gust for the period.
+
+      This property as an string value is deprecated. Future versions will
+      express this value as a quantitative value object. To make use of the
+      future standard format now, set the "forecast_wind_speed_qv" feature flag
+      on the request.
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+    union:
+      - QuantitativeValue
+      - string
+  GridpointForecastPeriodWindSpeed:
+    discriminated: false
+    docs: >
+      Wind speed for the period.
+
+      This property as an string value is deprecated. Future versions will
+      express this value as a quantitative value object. To make use of the
+      future standard format now, set the "forecast_wind_speed_qv" feature flag
+      on the request.
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+    union:
+      - QuantitativeValue
+      - string
+  GridpointForecastRequestFeatureFlagsItem:
+    enum:
+      - forecast_temperature_qv
+      - forecast_wind_speed_qv
+    source:
+      openapi: openapi/openapi.yml
+  GridpointForecastUnits:
+    default: us
+    docs: Denotes the units used in the textual portions of the forecast.
+    enum:
+      - us
+      - si
+    source:
+      openapi: openapi/openapi.yml
+  GridpointGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<Gridpoint>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  GridpointHazards:
+    inline: true
+    properties:
+      values: list<GridpointHazardsValuesItem>
+    source:
+      openapi: openapi/openapi.yml
+  GridpointHazardsValuesItem:
+    inline: true
+    properties:
+      validTime: Iso8601Interval
+      value: list<GridpointHazardsValuesItemValueItem>
+    source:
+      openapi: openapi/openapi.yml
+  GridpointHazardsValuesItemValueItem:
+    docs: A value object representing an expected hazard.
+    inline: true
+    properties:
+      event_number:
+        docs: >
+          Event number. If this hazard refers to a national or regional center
+          product (such as a Storm Prediction Center convective watch), this
+          value will be the sequence number of that product.
+        type: optional<integer>
+      phenomenon:
+        docs: >
+          Hazard code. This value will correspond to a P-VTEC phenomenon code as
+          defined in NWS Directive 10-1703.
+        type: string
+        validation:
+          pattern: ^\w{2}$
+      significance:
+        docs: >
+          Significance code. This value will correspond to a P-VTEC significance
+          code as defined in NWS Directive 10-1703.
+
+          This will most frequently be "A" for a watch or "Y" for an advisory.
+        type: string
+        validation:
+          pattern: ^\w$
+    source:
+      openapi: openapi/openapi.yml
+  GridpointJsonLd: Gridpoint
+  GridpointQuantitativeValueLayer:
+    docs: >
+      A gridpoint layer consisting of quantitative values (numeric values with
+      associated units of measure).
+    properties:
+      uom: optional<UnitOfMeasure>
+      values: list<GridpointQuantitativeValueLayerValuesItem>
+    source:
+      openapi: openapi/openapi.yml
+  GridpointQuantitativeValueLayerValuesItem:
+    inline: true
+    properties:
+      validTime: Iso8601Interval
+      value: optional<double>
+    source:
+      openapi: openapi/openapi.yml
+  GridpointWeather:
+    inline: true
+    properties:
+      values: list<GridpointWeatherValuesItem>
+    source:
+      openapi: openapi/openapi.yml
+  GridpointWeatherValuesItem:
+    inline: true
+    properties:
+      validTime: Iso8601Interval
+      value: list<GridpointWeatherValuesItemValueItem>
+    source:
+      openapi: openapi/openapi.yml
+  GridpointWeatherValuesItemValueItem:
+    docs: A value object representing expected weather phenomena.
+    inline: true
+    properties:
+      attributes: list<GridpointWeatherValuesItemValueItemAttributesItem>
+      coverage: optional<GridpointWeatherValuesItemValueItemCoverage>
+      intensity: optional<GridpointWeatherValuesItemValueItemIntensity>
+      visibility: QuantitativeValue
+      weather: optional<GridpointWeatherValuesItemValueItemWeather>
+    source:
+      openapi: openapi/openapi.yml
+  GridpointWeatherValuesItemValueItemAttributesItem:
+    enum:
+      - damaging_wind
+      - dry_thunderstorms
+      - flooding
+      - gusty_wind
+      - heavy_rain
+      - large_hail
+      - small_hail
+      - tornadoes
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  GridpointWeatherValuesItemValueItemCoverage:
+    enum:
+      - areas
+      - brief
+      - chance
+      - definite
+      - few
+      - frequent
+      - intermittent
+      - isolated
+      - likely
+      - numerous
+      - occasional
+      - patchy
+      - periods
+      - scattered
+      - slight_chance
+      - widespread
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  GridpointWeatherValuesItemValueItemIntensity:
+    enum:
+      - very_light
+      - light
+      - moderate
+      - heavy
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  GridpointWeatherValuesItemValueItemWeather:
+    enum:
+      - blowing_dust
+      - blowing_sand
+      - blowing_snow
+      - drizzle
+      - fog
+      - freezing_fog
+      - freezing_drizzle
+      - freezing_rain
+      - freezing_spray
+      - frost
+      - hail
+      - haze
+      - ice_crystals
+      - ice_fog
+      - rain
+      - rain_showers
+      - sleet
+      - smoke
+      - snow
+      - snow_showers
+      - thunderstorms
+      - volcanic_ash
+      - water_spouts
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  IconsDualConditionRequestSize:
+    enum:
+      - small
+      - medium
+      - large
+  IconsRequestSize:
+    enum:
+      - small
+      - medium
+      - large
+  IconsSummaryResponse:
+    properties:
+      '@context': optional<JsonLdContext>
+      icons: map<string, IconsSummaryResponseIconsValue>
+    source:
+      openapi: openapi/openapi.yml
+  IconsSummaryResponseIconsValue:
+    inline: true
+    properties:
+      description: string
+    source:
+      openapi: openapi/openapi.yml
+  Iso8601Duration:
+    docs: A time duration in ISO 8601 format.
+    type: string
+    validation:
+      pattern: ^P(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$
+  Iso8601Interval:
+    type: string
+    validation:
+      pattern: >-
+        ^P(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?\/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:?\d{2}?)|NOW)$
+  JsonLdContext:
+    discriminated: false
+    source:
+      openapi: openapi/openapi.yml
+    union:
+      - list<unknown>
+      - map<string, unknown>
+  LandRegionCode:
+    docs: |
+      Land region code. These correspond to the six NWS regional headquarters:
+      * AR: Alaska Region
+      * CR: Central Region
+      * ER: Eastern Region
+      * PR: Pacific Region
+      * SR: Southern Region
+      * WR: Western Region
+    enum:
+      - AR
+      - CR
+      - ER
+      - PR
+      - SR
+      - WR
+    source:
+      openapi: openapi/openapi.yml
+  MarineAreaCode:
+    docs: >
+      Marine area code as defined in NWS Directive 10-302:
+
+      * AM: Western North Atlantic Ocean and along U.S. East Coast south of
+      Currituck Beach Light NC following the coastline into Gulf of Mexico to
+      Ocean Reef FL including the Caribbean
+
+      * AN: Western North Atlantic Ocean and along U.S. East Coast from Canadian
+      border south to Currituck Beach Light NC
+
+      * GM: Gulf of Mexico and along the U.S. Gulf Coast from the Mexican border
+      to Ocean Reef FL
+
+      * LC: Lake St. Clair
+
+      * LE: Lake Erie
+
+      * LH: Lake Huron
+
+      * LM: Lake Michigan
+
+      * LO: Lake Ontario
+
+      * LS: Lake Superior
+
+      * PH: Central Pacific Ocean including Hawaiian waters
+
+      * PK: North Pacific Ocean near Alaska and along Alaska coastline including
+      the Bering Sea and the Gulf of Alaska
+
+      * PM: Western Pacific Ocean including Mariana Island waters
+
+      * PS: South Central Pacific Ocean including American Samoa waters
+
+      * PZ: Eastern North Pacific Ocean and along U.S. West Coast from Canadian
+      border to Mexican border
+
+      * SL: St. Lawrence River above St. Regis
+    enum:
+      - AM
+      - AN
+      - GM
+      - LC
+      - LE
+      - LH
+      - LM
+      - LO
+      - LS
+      - PH
+      - PK
+      - PM
+      - PS
+      - PZ
+      - SL
+    source:
+      openapi: openapi/openapi.yml
+  MarineRegionCode:
+    docs: |
+      Marine region code. These are groups of marine areas combined.
+      * AL: Alaska waters (PK)
+      * AT: Atlantic Ocean (AM, AN)
+      * GL: Great Lakes (LC, LE, LH, LM, LO, LS, SL)
+      * GM: Gulf of Mexico (GM)
+      * PA: Eastern Pacific Ocean and U.S. West Coast (PZ)
+      * PI: Central and Western Pacific (PH, PM, PS)
+    enum:
+      - AL
+      - AT
+      - GL
+      - GM
+      - PA
+      - PI
+    source:
+      openapi: openapi/openapi.yml
+  MetarPhenomenon:
+    docs: An object representing a decoded METAR phenomenon string.
+    properties:
+      intensity: optional<MetarPhenomenonIntensity>
+      inVicinity: optional<boolean>
+      modifier: optional<MetarPhenomenonModifier>
+      rawString: string
+      weather: MetarPhenomenonWeather
+    source:
+      openapi: openapi/openapi.yml
+  MetarPhenomenonIntensity:
+    enum:
+      - light
+      - heavy
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  MetarPhenomenonModifier:
+    enum:
+      - patches
+      - blowing
+      - low_drifting
+      - freezing
+      - shallow
+      - partial
+      - showers
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  MetarPhenomenonWeather:
+    enum:
+      - fog_mist
+      - dust_storm
+      - dust
+      - drizzle
+      - funnel_cloud
+      - fog
+      - smoke
+      - hail
+      - snow_pellets
+      - haze
+      - ice_crystals
+      - ice_pellets
+      - dust_whirls
+      - spray
+      - rain
+      - sand
+      - snow_grains
+      - snow
+      - squalls
+      - sand_storm
+      - thunderstorms
+      - unknown
+      - volcanic_ash
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  MetarSkyCoverage:
+    enum:
+      - OVC
+      - BKN
+      - SCT
+      - FEW
+      - SKC
+      - CLR
+      - VV
+    source:
+      openapi: openapi/openapi.yml
+  NwsCenterWeatherServiceUnitId:
+    docs: Three-letter identifier for a Center Weather Service Unit (CWSU).
+    enum:
+      - ZAB
+      - ZAN
+      - ZAU
+      - ZBW
+      - ZDC
+      - ZDV
+      - ZFA
+      - ZFW
+      - ZHU
+      - ZID
+      - ZJX
+      - ZKC
+      - ZLA
+      - ZLC
+      - ZMA
+      - ZME
+      - ZMP
+      - ZNY
+      - ZOA
+      - ZOB
+      - ZSE
+      - ZTL
+    source:
+      openapi: openapi/openapi.yml
+  NwsForecastOfficeId:
+    docs: Three-letter identifier for a NWS office.
+    enum:
+      - AKQ
+      - ALY
+      - BGM
+      - BOX
+      - BTV
+      - BUF
+      - CAE
+      - CAR
+      - CHS
+      - CLE
+      - CTP
+      - GSP
+      - GYX
+      - ILM
+      - ILN
+      - LWX
+      - MHX
+      - OKX
+      - PBZ
+      - PHI
+      - RAH
+      - RLX
+      - RNK
+      - ABQ
+      - AMA
+      - BMX
+      - BRO
+      - CRP
+      - EPZ
+      - EWX
+      - FFC
+      - FWD
+      - HGX
+      - HUN
+      - JAN
+      - JAX
+      - KEY
+      - LCH
+      - LIX
+      - LUB
+      - LZK
+      - MAF
+      - MEG
+      - MFL
+      - MLB
+      - MOB
+      - MRX
+      - OHX
+      - OUN
+      - SHV
+      - SJT
+      - SJU
+      - TAE
+      - TBW
+      - TSA
+      - ABR
+      - APX
+      - ARX
+      - BIS
+      - BOU
+      - CYS
+      - DDC
+      - DLH
+      - DMX
+      - DTX
+      - DVN
+      - EAX
+      - FGF
+      - FSD
+      - GID
+      - GJT
+      - GLD
+      - GRB
+      - GRR
+      - ICT
+      - ILX
+      - IND
+      - IWX
+      - JKL
+      - LBF
+      - LMK
+      - LOT
+      - LSX
+      - MKX
+      - MPX
+      - MQT
+      - OAX
+      - PAH
+      - PUB
+      - RIW
+      - SGF
+      - TOP
+      - UNR
+      - BOI
+      - BYZ
+      - EKA
+      - FGZ
+      - GGW
+      - HNX
+      - LKN
+      - LOX
+      - MFR
+      - MSO
+      - MTR
+      - OTX
+      - PDT
+      - PIH
+      - PQR
+      - PSR
+      - REV
+      - SEW
+      - SGX
+      - SLC
+      - STO
+      - TFX
+      - TWC
+      - VEF
+      - AER
+      - AFC
+      - AFG
+      - AJK
+      - ALU
+      - GUM
+      - HPA
+      - HFO
+      - PPG
+      - STU
+      - NH1
+      - NH2
+      - ONA
+      - ONP
+    source:
+      openapi: openapi/openapi.yml
+  NwsNationalHqId:
+    docs: Three-letter identifier for NWS National HQ.
+    type: literal<"NWS">
+  NwsOfficeId:
+    discriminated: false
+    source:
+      openapi: openapi/openapi.yml
+    union:
+      - NwsForecastOfficeId
+      - NwsRegionalHqId
+      - NwsNationalHqId
+  NwsRegionalHqId:
+    docs: Three-letter identifier for a NWS Regional HQ.
+    enum:
+      - ARH
+      - CRH
+      - ERH
+      - PRH
+      - SRH
+      - WRH
+    source:
+      openapi: openapi/openapi.yml
+  NwsZoneId:
+    docs: >
+      UGC identifier for a NWS forecast zone or county.
+
+      The first two letters will correspond to either a state code or marine
+      area code (see #/components/schemas/StateTerritoryCode and
+      #/components/schemas/MarineAreaCode for lists of valid letter
+      combinations).
+
+      The third letter will be Z for public/fire zone or C for county.
+    type: string
+    validation:
+      pattern: >-
+        ^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$
+  NwsZoneType:
+    enum:
+      - land
+      - marine
+      - forecast
+      - public
+      - coastal
+      - offshore
+      - fire
+      - county
+    source:
+      openapi: openapi/openapi.yml
+  Observation:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@id':
+        type: optional<string>
+        validation:
+          format: uri
+      '@type': optional<literal<"wx:ObservationStation">>
+      barometricPressure: optional<QuantitativeValue>
+      cloudLayers: optional<list<ObservationCloudLayersItem>>
+      dewpoint: optional<QuantitativeValue>
+      elevation: optional<QuantitativeValue>
+      geometry: optional<GeometryString>
+      heatIndex: optional<QuantitativeValue>
+      icon:
+        availability: deprecated
+        type: optional<string>
+        validation:
+          format: uri
+      maxTemperatureLast24Hours: optional<QuantitativeValue>
+      minTemperatureLast24Hours: optional<QuantitativeValue>
+      precipitationLast3Hours: optional<QuantitativeValue>
+      precipitationLast6Hours: optional<QuantitativeValue>
+      precipitationLastHour: optional<QuantitativeValue>
+      presentWeather: optional<list<MetarPhenomenon>>
+      rawMessage: optional<string>
+      relativeHumidity: optional<QuantitativeValue>
+      seaLevelPressure: optional<QuantitativeValue>
+      station:
+        type: optional<string>
+        validation:
+          format: uri
+      temperature: optional<QuantitativeValue>
+      textDescription: optional<string>
+      timestamp: optional<datetime>
+      visibility: optional<QuantitativeValue>
+      windChill: optional<QuantitativeValue>
+      windDirection: optional<QuantitativeValue>
+      windGust: optional<QuantitativeValue>
+      windSpeed: optional<QuantitativeValue>
+    source:
+      openapi: openapi/openapi.yml
+  ObservationCloudLayersItem:
+    inline: true
+    properties:
+      amount: MetarSkyCoverage
+      base: QuantitativeValue
+    source:
+      openapi: openapi/openapi.yml
+  ObservationCollectionGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      features: optional<list<ObservationCollectionGeoJsonFeaturesItem>>
+      type: literal<"FeatureCollection">
+    source:
+      openapi: openapi/openapi.yml
+  ObservationCollectionGeoJsonFeaturesItem:
+    inline: true
+    properties:
+      properties: optional<Observation>
+    source:
+      openapi: openapi/openapi.yml
+  ObservationCollectionJsonLd:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@graph': optional<list<Observation>>
+    source:
+      openapi: openapi/openapi.yml
+  ObservationGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<Observation>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  ObservationJsonLd: Observation
+  ObservationStation:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@id':
+        type: optional<string>
+        validation:
+          format: uri
+      '@type': optional<literal<"wx:ObservationStation">>
+      county:
+        docs: A link to the NWS county zone containing this station.
+        type: optional<string>
+        validation:
+          format: uri
+      elevation: optional<QuantitativeValue>
+      fireWeatherZone:
+        docs: A link to the NWS fire weather forecast zone containing this station.
+        type: optional<string>
+        validation:
+          format: uri
+      forecast:
+        docs: A link to the NWS public forecast zone containing this station.
+        type: optional<string>
+        validation:
+          format: uri
+      geometry: optional<GeometryString>
+      name: optional<string>
+      stationIdentifier: optional<string>
+      timeZone: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  ObservationStationCollectionGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      features: optional<list<ObservationStationCollectionGeoJsonFeaturesItem>>
+      observationStations: optional<list<string>>
+      pagination: optional<PaginationInfo>
+      type: literal<"FeatureCollection">
+    source:
+      openapi: openapi/openapi.yml
+  ObservationStationCollectionGeoJsonFeaturesItem:
+    inline: true
+    properties:
+      properties: optional<ObservationStation>
+    source:
+      openapi: openapi/openapi.yml
+  ObservationStationCollectionJsonLd:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@graph': optional<list<ObservationStation>>
+      observationStations: optional<list<string>>
+      pagination: optional<PaginationInfo>
+    source:
+      openapi: openapi/openapi.yml
+  ObservationStationGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<ObservationStation>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  ObservationStationJsonLd:
+    extends:
+      - ObservationStation
+    properties: {}
+    source:
+      openapi: openapi/openapi.yml
+  Office:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@id':
+        type: optional<string>
+        validation:
+          format: uri
+      '@type': optional<literal<"GovernmentOrganization">>
+      address: optional<OfficeAddress>
+      approvedObservationStations: optional<list<string>>
+      email: optional<string>
+      faxNumber: optional<string>
+      id: optional<string>
+      name: optional<string>
+      nwsRegion: optional<string>
+      parentOrganization:
+        type: optional<string>
+        validation:
+          format: uri
+      responsibleCounties: optional<list<string>>
+      responsibleFireZones: optional<list<string>>
+      responsibleForecastZones: optional<list<string>>
+      sameAs:
+        type: optional<string>
+        validation:
+          format: uri
+      telephone: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  OfficeAddress:
+    inline: true
+    properties:
+      '@type': optional<literal<"PostalAddress">>
+      addressLocality: optional<string>
+      addressRegion: optional<string>
+      postalCode: optional<string>
+      streetAddress: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  OfficeHeadline:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@id':
+        type: optional<string>
+        validation:
+          format: uri
+      content: optional<string>
+      id: optional<string>
+      important: optional<boolean>
+      issuanceTime: optional<datetime>
+      link:
+        type: optional<string>
+        validation:
+          format: uri
+      name: optional<string>
+      office:
+        type: optional<string>
+        validation:
+          format: uri
+      summary: optional<string>
+      title: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  OfficeHeadlineCollection:
+    properties:
+      '@context': JsonLdContext
+      '@graph': list<OfficeHeadline>
+    source:
+      openapi: openapi/openapi.yml
+  PaginationInfo:
+    docs: Links for retrieving more data from paged data sets
+    properties:
+      next:
+        docs: A link to the next page of records
+        type: string
+        validation:
+          format: uri
+    source:
+      openapi: openapi/openapi.yml
+  Point:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@id':
+        type: optional<string>
+        validation:
+          format: uri
+      '@type': optional<literal<"wx:Point">>
+      county:
+        type: optional<string>
+        validation:
+          format: uri
+      cwa: optional<NwsForecastOfficeId>
+      fireWeatherZone:
+        type: optional<string>
+        validation:
+          format: uri
+      forecast:
+        type: optional<string>
+        validation:
+          format: uri
+      forecastGridData:
+        type: optional<string>
+        validation:
+          format: uri
+      forecastHourly:
+        type: optional<string>
+        validation:
+          format: uri
+      forecastOffice:
+        type: optional<string>
+        validation:
+          format: uri
+      forecastZone:
+        type: optional<string>
+        validation:
+          format: uri
+      geometry: optional<GeometryString>
+      gridId: optional<NwsForecastOfficeId>
+      gridX:
+        type: optional<integer>
+        validation:
+          min: 0
+      gridY:
+        type: optional<integer>
+        validation:
+          min: 0
+      observationStations:
+        type: optional<string>
+        validation:
+          format: uri
+      radarStation: optional<string>
+      relativeLocation: optional<PointRelativeLocation>
+      timeZone: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  PointGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<Point>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  PointJsonLd:
+    extends:
+      - Point
+    properties: {}
+    source:
+      openapi: openapi/openapi.yml
+  PointRelativeLocation:
+    discriminated: false
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+    union:
+      - RelativeLocationGeoJson
+      - RelativeLocationJsonLd
+  PointString:
+    type: string
+    validation:
+      pattern: ^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$
+  ProblemDetail:
+    docs: >-
+      Detail about an error. This document conforms to RFC 7807 (Problem Details
+      for HTTP APIs).
+    extra-properties: true
+    properties:
+      correlationId:
+        docs: >
+          A unique identifier for the request, used for NWS debugging purposes.
+          Please include this identifier with any correspondence to help us
+          investigate your issue.
+        type: string
+      detail:
+        docs: >-
+          A human-readable explanation specific to this occurrence of the
+          problem.
+        type: string
+      instance:
+        docs: >
+          A URI reference (RFC 3986) that identifies the specific occurrence of
+          the problem. This is only an identifier and is not necessarily a
+          resolvable URL.
+        type: string
+        validation:
+          format: uri
+      status:
+        docs: >
+          The HTTP status code (RFC 7231, Section 6) generated by the origin
+          server for this occurrence of the problem.
+        type: double
+        validation:
+          max: 999
+          min: 100
+      title:
+        docs: A short, human-readable summary of the problem type.
+        type: string
+      type:
+        default: about:blank
+        docs: >
+          A URI reference (RFC 3986) that identifies the problem type. This is
+          only an identifier and is not necessarily a resolvable URL.
+        type: string
+        validation:
+          format: uri
+    source:
+      openapi: openapi/openapi.yml
+  QuantitativeValue:
+    docs: >
+      A structured value representing a measurement and its unit of measure.
+      This object is a slighly modified version of the schema.org definition at
+      https://schema.org/QuantitativeValue
+    properties:
+      maxValue:
+        docs: The maximum value of a range of measured values
+        type: optional<double>
+      minValue:
+        docs: The minimum value of a range of measured values
+        type: optional<double>
+      qualityControl:
+        docs: >
+          For values in observation records, the quality control flag from the
+          MADIS system. The definitions of these flags can be found at
+          https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
+        type: optional<QuantitativeValueQualityControl>
+      unitCode: optional<UnitOfMeasure>
+      value:
+        docs: A measured value
+        type: optional<double>
+    source:
+      openapi: openapi/openapi.yml
+  QuantitativeValueQualityControl:
+    docs: >
+      For values in observation records, the quality control flag from the MADIS
+      system. The definitions of these flags can be found at
+      https://madis.ncep.noaa.gov/madis_sfc_qc_notes.shtml
+    enum:
+      - Z
+      - C
+      - S
+      - V
+      - X
+      - Q
+      - G
+      - B
+      - T
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+  RegionCode:
+    discriminated: false
+    source:
+      openapi: openapi/openapi.yml
+    union:
+      - LandRegionCode
+      - MarineRegionCode
+  RelativeLocation:
+    properties:
+      bearing: optional<QuantitativeValue>
+      city: optional<string>
+      distance: optional<QuantitativeValue>
+      state: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  RelativeLocationGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<RelativeLocation>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  RelativeLocationJsonLd:
+    extends:
+      - RelativeLocation
+    properties:
+      geometry: optional<GeometryString>
+    source:
+      openapi: openapi/openapi.yml
+  SatelliteThumbnailsRequestArea:
+    enum:
+      - a
+      - e
+      - g
+      - h
+      - p
+      - s
+      - w
+    source:
+      openapi: openapi/openapi.yml
+  Sigmet:
+    properties:
+      atsu: optional<AtsuIdentifier>
+      end: optional<datetime>
+      fir: optional<string>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      issueTime: optional<datetime>
+      phenomenon:
+        type: optional<string>
+        validation:
+          format: uri
+      sequence: optional<string>
+      start: optional<datetime>
+    source:
+      openapi: openapi/openapi.yml
+  SigmetCollectionGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      features: optional<list<SigmetGeoJson>>
+      type: literal<"FeatureCollection">
+    source:
+      openapi: openapi/openapi.yml
+  SigmetGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<Sigmet>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  SigmetSequenceNumber: string
+  StateTerritoryCode:
+    enum:
+      - AL
+      - AK
+      - AS
+      - AR
+      - AZ
+      - CA
+      - CO
+      - CT
+      - DE
+      - DC
+      - FL
+      - GA
+      - GU
+      - HI
+      - ID
+      - IL
+      - IN
+      - IA
+      - KS
+      - KY
+      - LA
+      - ME
+      - MD
+      - MA
+      - MI
+      - MN
+      - MS
+      - MO
+      - MT
+      - NE
+      - NV
+      - NH
+      - NJ
+      - NM
+      - NY
+      - NC
+      - ND
+      - OH
+      - OK
+      - OR
+      - PA
+      - PR
+      - RI
+      - SC
+      - SD
+      - TN
+      - TX
+      - UT
+      - VT
+      - VI
+      - VA
+      - WA
+      - WV
+      - WI
+      - WY
+      - MP
+      - PW
+      - FM
+      - MH
+    source:
+      openapi: openapi/openapi.yml
+  TextProduct:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@id':
+        type: optional<string>
+        validation:
+          format: uri
+      id: optional<string>
+      issuanceTime: optional<datetime>
+      issuingOffice: optional<string>
+      productCode: optional<string>
+      productName: optional<string>
+      productText: optional<string>
+      wmoCollectiveId: optional<string>
+    source:
+      openapi: openapi/openapi.yml
+  TextProductCollection:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@graph': optional<list<TextProduct>>
+    source:
+      openapi: openapi/openapi.yml
+  TextProductLocationCollection:
+    properties:
+      '@context': optional<JsonLdContext>
+      locations: optional<map<string, optional<string>>>
+    source:
+      openapi: openapi/openapi.yml
+  TextProductTypeCollection:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@graph': optional<list<TextProductTypeCollectionGraphItem>>
+    source:
+      openapi: openapi/openapi.yml
+  TextProductTypeCollectionGraphItem:
+    inline: true
+    properties:
+      productCode: string
+      productName: string
+    source:
+      openapi: openapi/openapi.yml
+  Time:
+    docs: A time (in HHMM format). This is always specified in UTC (Zulu) time.
+    type: string
+    validation:
+      pattern: ^([01][0-9]|2[0-3])[0-5][0-9]$
+  UnitOfMeasure:
+    docs: >
+      A string denoting a unit of measure, expressed in the format "{unit}" or
+      "{namespace}:{unit}".
+
+      Units with the namespace "wmo" or "wmoUnit" are defined in the World
+      Meteorological Organization Codes Registry at
+      http://codes.wmo.int/common/unit and should be canonically resolvable to
+      http://codes.wmo.int/common/unit/{unit}.
+
+      Units with the namespace "nwsUnit" are currently custom and do not align
+      to any standard.
+
+      Units with no namespace or the namespace "uc" are compliant with the
+      Unified Code for Units of Measure syntax defined at
+      https://unitsofmeasure.org/. This also aligns with recent versions of the
+      Geographic Markup Language (GML) standard, the IWXXM standard, and OGC
+      Observations and Measurements v2.0 (ISO/DIS 19156).
+
+      Namespaced units are considered deprecated. We will be aligning API to use
+      the same standards as GML/IWXXM in the future.
+    type: string
+    validation:
+      pattern: ^((wmo|uc|wmoUnit|nwsUnit):)?.*$
+  Zone:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@id':
+        type: optional<string>
+        validation:
+          format: uri
+      '@type': optional<literal<"wx:Zone">>
+      awipsLocationIdentifier: optional<string>
+      cwa:
+        availability: deprecated
+        type: optional<list<NwsForecastOfficeId>>
+      effectiveDate: optional<datetime>
+      expirationDate: optional<datetime>
+      forecastOffice:
+        type: optional<string>
+        validation:
+          format: uri
+      forecastOffices:
+        availability: deprecated
+        type: optional<list<string>>
+      geometry: optional<GeometryString>
+      gridIdentifier: optional<string>
+      id: optional<NwsZoneId>
+      name: optional<string>
+      observationStations: optional<list<string>>
+      radarStation: optional<string>
+      state: optional<ZoneState>
+      timeZone: optional<list<string>>
+      type: optional<NwsZoneType>
+    source:
+      openapi: openapi/openapi.yml
+  ZoneCollectionGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      features: optional<list<ZoneCollectionGeoJsonFeaturesItem>>
+      type: literal<"FeatureCollection">
+    source:
+      openapi: openapi/openapi.yml
+  ZoneCollectionGeoJsonFeaturesItem:
+    inline: true
+    properties:
+      properties: optional<Zone>
+    source:
+      openapi: openapi/openapi.yml
+  ZoneCollectionJsonLd:
+    properties:
+      '@context': optional<JsonLdContext>
+      '@graph': optional<list<Zone>>
+    source:
+      openapi: openapi/openapi.yml
+  ZoneForecast:
+    docs: An object representing a zone area forecast.
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeometryString>
+      periods:
+        docs: An array of forecast periods.
+        type: optional<list<ZoneForecastPeriodsItem>>
+      updated:
+        docs: The time this zone forecast product was published.
+        type: optional<datetime>
+      zone:
+        docs: An API link to the zone this forecast is for.
+        type: optional<string>
+        validation:
+          format: uri
+    source:
+      openapi: openapi/openapi.yml
+  ZoneForecastGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<ZoneForecast>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  ZoneForecastJsonLd: ZoneForecast
+  ZoneForecastPeriodsItem:
+    inline: true
+    properties:
+      detailedForecast:
+        docs: A detailed textual forecast for the period.
+        type: string
+      name:
+        docs: A textual description of the period.
+        type: string
+      number:
+        docs: A sequential identifier number.
+        type: integer
+    source:
+      openapi: openapi/openapi.yml
+  ZoneGeoJson:
+    properties:
+      '@context': optional<JsonLdContext>
+      geometry: optional<GeoJsonGeometry>
+      id:
+        type: optional<string>
+        validation:
+          format: uri
+      properties: optional<Zone>
+      type: literal<"Feature">
+    source:
+      openapi: openapi/openapi.yml
+  ZoneJsonLd: Zone
+  ZoneState:
+    discriminated: false
+    inline: true
+    source:
+      openapi: openapi/openapi.yml
+    union:
+      - StateTerritoryCode
+      - literal<"">
+service:
+  auth: false
+  base-path: ''
+  endpoints:
+    alerts_active:
+      auth: true
+      docs: Returns all currently active alerts
+      examples:
+        - response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              pagination:
+                next: next
+              title: title
+              type: FeatureCollection
+              updated: '2024-01-15T09:30:00Z'
+      method: GET
+      path: /alerts/active
+      request:
+        name: AlertsActiveRequest
+        query-parameters:
+          area:
+            allow-multiple: true
+            docs: >
+              State/territory code or marine area code
+
+              This parameter is incompatible with the following parameters:
+              point, region, region_type, zone
+            type: optional<AreaCode>
+          certainty:
+            allow-multiple: true
+            docs: Certainty (observed, likely, possible, unlikely, unknown)
+            type: optional<AlertCertainty>
+          code:
+            allow-multiple: true
+            docs: Event code
+            type: optional<string>
+            validation:
+              pattern: ^\w{3}$
+          event:
+            allow-multiple: true
+            docs: Event name
+            type: optional<string>
+            validation:
+              pattern: ^[A-Za-z0-9 ]+$
+          limit:
+            default: 500
+            docs: Limit
+            type: optional<integer>
+            validation:
+              max: 500
+              min: 1
+          message_type:
+            allow-multiple: true
+            docs: Message type (alert, update, cancel)
+            type: optional<AlertsActiveRequestMessageTypeItem>
+          point:
+            docs: >
+              Point (latitude,longitude)
+
+              This parameter is incompatible with the following parameters:
+              area, region, region_type, zone
+            type: optional<PointString>
+          region:
+            allow-multiple: true
+            docs: >
+              Marine region code
+
+              This parameter is incompatible with the following parameters:
+              area, point, region_type, zone
+            type: optional<MarineRegionCode>
+          region_type:
+            docs: >
+              Region type (land or marine)
+
+              This parameter is incompatible with the following parameters:
+              area, point, region, zone
+            type: optional<AlertsActiveRequestRegionType>
+          severity:
+            allow-multiple: true
+            docs: Severity (extreme, severe, moderate, minor, unknown)
+            type: optional<AlertSeverity>
+          status:
+            allow-multiple: true
+            docs: Status (actual, exercise, system, test, draft)
+            type: optional<AlertsActiveRequestStatusItem>
+          urgency:
+            allow-multiple: true
+            docs: Urgency (immediate, expected, future, past, unknown)
+            type: optional<AlertUrgency>
+          zone:
+            allow-multiple: true
+            docs: >
+              Zone ID (forecast or county)
+
+              This parameter is incompatible with the following parameters:
+              area, point, region, region_type
+            type: optional<NwsZoneId>
+      response:
+        docs: A collection of alerts.
+        type: AlertCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    alerts_active_area:
+      auth: true
+      docs: Returns active alerts for the given area (state or marine area)
+      examples:
+        - path-parameters:
+            area: AL
+          response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              pagination:
+                next: next
+              title: title
+              type: FeatureCollection
+              updated: '2024-01-15T09:30:00Z'
+      method: GET
+      path: /alerts/active/area/{area}
+      path-parameters:
+        area:
+          docs: State/area ID
+          type: AreaCode
+      response:
+        docs: A collection of alerts.
+        type: AlertCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    alerts_active_count:
+      auth: true
+      docs: Returns info on the number of active alerts
+      examples:
+        - response:
+            body:
+              areas:
+                key: 1
+              land: 1
+              marine: 1
+              regions:
+                key: 1
+              total: 1
+              zones:
+                key: 1
+      method: GET
+      path: /alerts/active/count
+      response:
+        docs: >-
+          A data structure showing the counts of active alerts broken down by
+          various categories
+        type: AlertsActiveCountResponse
+      source:
+        openapi: openapi/openapi.yml
+    alerts_active_region:
+      auth: true
+      docs: Returns active alerts for the given marine region
+      examples:
+        - path-parameters:
+            region: AL
+          response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              pagination:
+                next: next
+              title: title
+              type: FeatureCollection
+              updated: '2024-01-15T09:30:00Z'
+      method: GET
+      path: /alerts/active/region/{region}
+      path-parameters:
+        region:
+          docs: Marine region ID
+          type: MarineRegionCode
+      response:
+        docs: A collection of alerts.
+        type: AlertCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    alerts_active_zone:
+      auth: true
+      docs: Returns active alerts for the given NWS public zone or county
+      examples:
+        - path-parameters:
+            zoneId: zoneId
+          response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              pagination:
+                next: next
+              title: title
+              type: FeatureCollection
+              updated: '2024-01-15T09:30:00Z'
+      method: GET
+      path: /alerts/active/zone/{zoneId}
+      path-parameters:
+        zoneId:
+          docs: NWS public zone/county identifier
+          type: NwsZoneId
+      response:
+        docs: A collection of alerts.
+        type: AlertCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    alerts_query:
+      auth: true
+      docs: Returns all alerts
+      examples:
+        - response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              pagination:
+                next: next
+              title: title
+              type: FeatureCollection
+              updated: '2024-01-15T09:30:00Z'
+      method: GET
+      path: /alerts
+      request:
+        name: AlertsQueryRequest
+        query-parameters:
+          active:
+            availability: deprecated
+            docs: List only active alerts (use /alerts/active endpoints instead)
+            type: optional<boolean>
+          area:
+            allow-multiple: true
+            docs: >
+              State/territory code or marine area code
+
+              This parameter is incompatible with the following parameters:
+              point, region, region_type, zone
+            type: optional<AreaCode>
+          certainty:
+            allow-multiple: true
+            docs: Certainty (observed, likely, possible, unlikely, unknown)
+            type: optional<AlertCertainty>
+          code:
+            allow-multiple: true
+            docs: Event code
+            type: optional<string>
+            validation:
+              pattern: ^\w{3}$
+          cursor:
+            docs: Pagination cursor
+            type: optional<string>
+          end:
+            docs: End time
+            type: optional<datetime>
+          event:
+            allow-multiple: true
+            docs: Event name
+            type: optional<string>
+            validation:
+              pattern: ^[A-Za-z0-9 ]+$
+          limit:
+            default: 500
+            docs: Limit
+            type: optional<integer>
+            validation:
+              max: 500
+              min: 1
+          message_type:
+            allow-multiple: true
+            docs: Message type (alert, update, cancel)
+            type: optional<AlertsQueryRequestMessageTypeItem>
+          point:
+            docs: >
+              Point (latitude,longitude)
+
+              This parameter is incompatible with the following parameters:
+              area, region, region_type, zone
+            type: optional<PointString>
+          region:
+            allow-multiple: true
+            docs: >
+              Marine region code
+
+              This parameter is incompatible with the following parameters:
+              area, point, region_type, zone
+            type: optional<MarineRegionCode>
+          region_type:
+            docs: >
+              Region type (land or marine)
+
+              This parameter is incompatible with the following parameters:
+              area, point, region, zone
+            type: optional<AlertsQueryRequestRegionType>
+          severity:
+            allow-multiple: true
+            docs: Severity (extreme, severe, moderate, minor, unknown)
+            type: optional<AlertSeverity>
+          start:
+            docs: Start time
+            type: optional<datetime>
+          status:
+            allow-multiple: true
+            docs: Status (actual, exercise, system, test, draft)
+            type: optional<AlertsQueryRequestStatusItem>
+          urgency:
+            allow-multiple: true
+            docs: Urgency (immediate, expected, future, past, unknown)
+            type: optional<AlertUrgency>
+          zone:
+            allow-multiple: true
+            docs: >
+              Zone ID (forecast or county)
+
+              This parameter is incompatible with the following parameters:
+              area, point, region, region_type
+            type: optional<NwsZoneId>
+      response:
+        docs: A collection of alerts.
+        type: AlertCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    alerts_single:
+      auth: true
+      docs: Returns a specific alert
+      examples:
+        - path-parameters:
+            id: id
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                affectedZones:
+                  - affectedZones
+                areaDesc: areaDesc
+                category: Met
+                certainty: Observed
+                description: description
+                effective: '2024-01-15T09:30:00Z'
+                ends: '2024-01-15T09:30:00Z'
+                event: event
+                expires: '2024-01-15T09:30:00Z'
+                geocode:
+                  SAME:
+                    - SAME
+                  UGC:
+                    - UGC
+                headline: headline
+                id: id
+                instruction: instruction
+                messageType: Alert
+                onset: '2024-01-15T09:30:00Z'
+                parameters:
+                  key: []
+                references:
+                  - {}
+                response: Shelter
+                sender: sender
+                senderName: senderName
+                sent: '2024-01-15T09:30:00Z'
+                severity: Extreme
+                status: Actual
+                urgency: Immediate
+              type: Feature
+      method: GET
+      path: /alerts/{id}
+      path-parameters:
+        id:
+          docs: Alert identifier
+          type: AlertId
+      response:
+        docs: An alert record
+        type: AlertGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    alerts_types:
+      auth: true
+      docs: Returns a list of alert types
+      examples:
+        - response:
+            body:
+              eventTypes:
+                - eventTypes
+      method: GET
+      path: /alerts/types
+      response:
+        docs: A list of recognized event types
+        type: AlertsTypesResponse
+      source:
+        openapi: openapi/openapi.yml
+    cwa:
+      auth: true
+      docs: Returns a list of Center Weather Advisories from a CWSU
+      examples:
+        - path-parameters:
+            cwsuId: ZAB
+            date: date
+            sequence: 1
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                cwsu: ZAB
+                end: '2024-01-15T09:30:00Z'
+                id: id
+                issueTime: '2024-01-15T09:30:00Z'
+                observedProperty: observedProperty
+                sequence: 1
+                start: '2024-01-15T09:30:00Z'
+                text: text
+              type: Feature
+      method: GET
+      path: /aviation/cwsus/{cwsuId}/cwas/{date}/{sequence}
+      path-parameters:
+        cwsuId:
+          docs: NWS CWSU ID
+          type: NwsCenterWeatherServiceUnitId
+        date:
+          docs: Date (YYYY-MM-DD format)
+          type: Date
+        sequence:
+          docs: Sequence number
+          type: integer
+      response:
+        docs: success
+        type: CenterWeatherAdvisoryGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    cwas:
+      auth: true
+      docs: Returns a list of Center Weather Advisories from a CWSU
+      examples:
+        - path-parameters:
+            cwsuId: ZAB
+          response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              type: FeatureCollection
+      method: GET
+      path: /aviation/cwsus/{cwsuId}/cwas
+      path-parameters:
+        cwsuId:
+          docs: NWS CWSU ID
+          type: NwsCenterWeatherServiceUnitId
+      response:
+        docs: success
+        type: CenterWeatherAdvisoryCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    cwsu:
+      auth: true
+      docs: Returns metadata about a Center Weather Service Unit
+      examples:
+        - path-parameters:
+            cwsuId: ZAB
+          response:
+            body:
+              '@context':
+                - key: value
+              '@id': '@id'
+              '@type': GovernmentOrganization
+              address:
+                '@type': PostalAddress
+                addressLocality: addressLocality
+                addressRegion: addressRegion
+                postalCode: postalCode
+                streetAddress: streetAddress
+              approvedObservationStations:
+                - approvedObservationStations
+              email: email
+              faxNumber: faxNumber
+              id: id
+              name: name
+              nwsRegion: nwsRegion
+              parentOrganization: parentOrganization
+              responsibleCounties:
+                - responsibleCounties
+              responsibleFireZones:
+                - responsibleFireZones
+              responsibleForecastZones:
+                - responsibleForecastZones
+              sameAs: sameAs
+              telephone: telephone
+      method: GET
+      path: /aviation/cwsus/{cwsuId}
+      path-parameters:
+        cwsuId:
+          docs: NWS CWSU ID
+          type: NwsCenterWeatherServiceUnitId
+      response:
+        docs: success
+        type: CenterWeatherServiceUnitJsonLd
+      source:
+        openapi: openapi/openapi.yml
+    glossary:
+      auth: true
+      docs: Returns glossary terms
+      examples:
+        - response:
+            body:
+              '@context':
+                - key: value
+              glossary:
+                - definition: definition
+                  term: term
+      method: GET
+      path: /glossary
+      response:
+        docs: A set of glossary terms
+        type: GlossaryResponse
+      source:
+        openapi: openapi/openapi.yml
+    gridpoint:
+      auth: true
+      docs: Returns raw numerical forecast data for a 2.5km grid area
+      examples:
+        - path-parameters:
+            wfo: AKQ
+            x: 1
+            'y': 1
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                '@context':
+                  - key: value
+                '@id': '@id'
+                '@type': wx:Gridpoint
+                elevation:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                forecastOffice: forecastOffice
+                geometry: geometry
+                gridId: gridId
+                gridX: 1
+                gridY: 1
+                hazards:
+                  values:
+                    - validTime: P1Y2M10DT2H30M/2008-05-11T15:30:00Z
+                      value:
+                        - phenomenon: phenomenon
+                          significance: significance
+                updateTime: '2024-01-15T09:30:00Z'
+                validTimes: P1Y2M10DT2H30M/2008-05-11T15:30:00Z
+                weather:
+                  values:
+                    - validTime: P1Y2M10DT2H30M/2008-05-11T15:30:00Z
+                      value:
+                        - attributes:
+                            - damaging_wind
+                          visibility: {}
+              type: Feature
+      method: GET
+      path: /gridpoints/{wfo}/{x},{y}
+      path-parameters:
+        wfo:
+          docs: Forecast office ID
+          type: NwsForecastOfficeId
+        x:
+          docs: Forecast grid X coordinate
+          type: integer
+        'y':
+          docs: Forecast grid Y coordinate
+          type: integer
+      response:
+        docs: Gridpoint forecast data
+        type: GridpointGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    gridpoint_forecast:
+      auth: true
+      docs: Returns a textual forecast for a 2.5km grid area
+      examples:
+        - path-parameters:
+            wfo: AKQ
+            x: 1
+            'y': 1
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                '@context':
+                  - key: value
+                elevation:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                forecastGenerator: forecastGenerator
+                generatedAt: '2024-01-15T09:30:00Z'
+                geometry: geometry
+                periods:
+                  - name: Tuesday Night
+                units: us
+                updateTime: '2024-01-15T09:30:00Z'
+                validTimes: P1Y2M10DT2H30M/2008-05-11T15:30:00Z
+              type: Feature
+      method: GET
+      path: /gridpoints/{wfo}/{x},{y}/forecast
+      path-parameters:
+        wfo:
+          docs: Forecast office ID
+          type: NwsForecastOfficeId
+        x:
+          docs: Forecast grid X coordinate
+          type: integer
+        'y':
+          docs: Forecast grid Y coordinate
+          type: integer
+      request:
+        headers:
+          Feature-Flags:
+            docs: >
+              Enable future and experimental features (see documentation for
+              more info):
+
+              * forecast_temperature_qv: Represent temperature as
+              QuantitativeValue
+
+              * forecast_wind_speed_qv: Represent wind speed as
+              QuantitativeValue
+            name: featureFlags
+            type: optional<list<GridpointForecastRequestFeatureFlagsItem>>
+        name: GridpointForecastRequest
+        query-parameters:
+          units:
+            docs: Use US customary or SI (metric) units in textual output
+            type: optional<GridpointForecastUnits>
+      response:
+        docs: A forecast for a gridpoint.
+        type: GridpointForecastGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    gridpoint_forecast_hourly:
+      auth: true
+      docs: Returns a textual hourly forecast for a 2.5km grid area
+      examples:
+        - path-parameters:
+            wfo: AKQ
+            x: 1
+            'y': 1
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                '@context':
+                  - key: value
+                elevation:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                forecastGenerator: forecastGenerator
+                generatedAt: '2024-01-15T09:30:00Z'
+                geometry: geometry
+                periods:
+                  - name: Tuesday Night
+                units: us
+                updateTime: '2024-01-15T09:30:00Z'
+                validTimes: P1Y2M10DT2H30M/2008-05-11T15:30:00Z
+              type: Feature
+      method: GET
+      path: /gridpoints/{wfo}/{x},{y}/forecast/hourly
+      path-parameters:
+        wfo:
+          docs: Forecast office ID
+          type: NwsForecastOfficeId
+        x:
+          docs: Forecast grid X coordinate
+          type: integer
+        'y':
+          docs: Forecast grid Y coordinate
+          type: integer
+      request:
+        headers:
+          Feature-Flags:
+            docs: >
+              Enable future and experimental features (see documentation for
+              more info):
+
+              * forecast_temperature_qv: Represent temperature as
+              QuantitativeValue
+
+              * forecast_wind_speed_qv: Represent wind speed as
+              QuantitativeValue
+            name: featureFlags
+            type: optional<list<GridpointForecastHourlyRequestFeatureFlagsItem>>
+        name: GridpointForecastHourlyRequest
+        query-parameters:
+          units:
+            docs: Use US customary or SI (metric) units in textual output
+            type: optional<GridpointForecastUnits>
+      response:
+        docs: A forecast for a gridpoint.
+        type: GridpointForecastGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    gridpoint_stations:
+      auth: true
+      docs: >-
+        Returns a list of observation stations usable for a given 2.5km grid
+        area
+      examples:
+        - path-parameters:
+            wfo: AKQ
+            x: 1
+            'y': 1
+          response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              observationStations:
+                - observationStations
+              pagination:
+                next: next
+              type: FeatureCollection
+      method: GET
+      path: /gridpoints/{wfo}/{x},{y}/stations
+      path-parameters:
+        wfo:
+          docs: Forecast office ID
+          type: NwsForecastOfficeId
+        x:
+          docs: Forecast grid X coordinate
+          type: integer
+        'y':
+          docs: Forecast grid Y coordinate
+          type: integer
+      request:
+        name: GridpointStationsRequest
+        query-parameters:
+          cursor:
+            docs: Pagination cursor
+            type: optional<string>
+          limit:
+            default: 500
+            docs: Limit
+            type: optional<integer>
+            validation:
+              max: 500
+              min: 1
+      response:
+        docs: A collection of observation stations.
+        type: ObservationStationCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    icons:
+      auth: true
+      availability: deprecated
+      docs: Returns a forecast icon. Icon services in API are deprecated.
+      method: GET
+      path: /icons/{set}/{timeOfDay}/{first}
+      path-parameters:
+        first:
+          docs: .
+          type: string
+        set:
+          docs: .
+          type: string
+        timeOfDay:
+          docs: .
+          type: string
+      request:
+        name: IconsRequest
+        query-parameters:
+          fontsize:
+            docs: Font size
+            type: optional<integer>
+            validation:
+              max: 24
+              min: 2
+          size:
+            docs: Font size
+            type: optional<IconsRequestSize>
+      response:
+        docs: success
+        type: file
+      source:
+        openapi: openapi/openapi.yml
+    icons_summary:
+      auth: true
+      availability: deprecated
+      docs: >-
+        Returns a list of icon codes and textual descriptions. Icon services in
+        API are deprecated.
+      examples:
+        - response:
+            body:
+              '@context':
+                - key: value
+              icons:
+                key:
+                  description: description
+      method: GET
+      path: /icons
+      response:
+        docs: success
+        type: IconsSummaryResponse
+      source:
+        openapi: openapi/openapi.yml
+    iconsDualCondition:
+      auth: true
+      availability: deprecated
+      docs: Returns a forecast icon. Icon services in API are deprecated.
+      method: GET
+      path: /icons/{set}/{timeOfDay}/{first}/{second}
+      path-parameters:
+        first:
+          docs: .
+          type: string
+        second:
+          docs: .
+          type: string
+        set:
+          docs: .
+          type: string
+        timeOfDay:
+          docs: .
+          type: string
+      request:
+        name: IconsDualConditionRequest
+        query-parameters:
+          fontsize:
+            docs: Font size
+            type: optional<integer>
+            validation:
+              max: 24
+              min: 2
+          size:
+            docs: Font size
+            type: optional<IconsDualConditionRequestSize>
+      response:
+        docs: success
+        type: file
+      source:
+        openapi: openapi/openapi.yml
+    location_products:
+      auth: true
+      docs: Returns a list of valid text product types for a given issuance location
+      examples:
+        - path-parameters:
+            locationId: locationId
+          response:
+            body:
+              '@context':
+                - key: value
+              '@graph':
+                - productCode: productCode
+                  productName: productName
+      method: GET
+      path: /products/locations/{locationId}/types
+      path-parameters:
+        locationId:
+          docs: .
+          type: string
+      response:
+        docs: success
+        type: TextProductTypeCollection
+      source:
+        openapi: openapi/openapi.yml
+    obs_station:
+      auth: true
+      docs: Returns metadata about a given observation station
+      examples:
+        - path-parameters:
+            stationId: stationId
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                '@context':
+                  - key: value
+                '@id': '@id'
+                '@type': wx:ObservationStation
+                county: county
+                elevation:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                fireWeatherZone: fireWeatherZone
+                forecast: forecast
+                geometry: geometry
+                name: name
+                stationIdentifier: stationIdentifier
+                timeZone: timeZone
+              type: Feature
+      method: GET
+      path: /stations/{stationId}
+      path-parameters:
+        stationId:
+          docs: Observation station ID
+          type: string
+      response:
+        docs: success
+        type: ObservationStationGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    obs_stations:
+      auth: true
+      docs: Returns a list of observation stations.
+      examples:
+        - response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              observationStations:
+                - observationStations
+              pagination:
+                next: next
+              type: FeatureCollection
+      method: GET
+      path: /stations
+      request:
+        name: ObsStationsRequest
+        query-parameters:
+          cursor:
+            docs: Pagination cursor
+            type: optional<string>
+          id:
+            allow-multiple: true
+            docs: Filter by observation station ID
+            type: optional<string>
+          limit:
+            default: 500
+            docs: Limit
+            type: optional<integer>
+            validation:
+              max: 500
+              min: 1
+          state:
+            allow-multiple: true
+            docs: Filter by state/marine area code
+            type: optional<AreaCode>
+      response:
+        docs: A collection of observation stations.
+        type: ObservationStationCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    office:
+      auth: true
+      docs: Returns metadata about a NWS forecast office
+      examples:
+        - path-parameters:
+            officeId: AKQ
+          response:
+            body:
+              '@context':
+                - key: value
+              '@id': '@id'
+              '@type': GovernmentOrganization
+              address:
+                '@type': PostalAddress
+                addressLocality: addressLocality
+                addressRegion: addressRegion
+                postalCode: postalCode
+                streetAddress: streetAddress
+              approvedObservationStations:
+                - approvedObservationStations
+              email: email
+              faxNumber: faxNumber
+              id: id
+              name: name
+              nwsRegion: nwsRegion
+              parentOrganization: parentOrganization
+              responsibleCounties:
+                - responsibleCounties
+              responsibleFireZones:
+                - responsibleFireZones
+              responsibleForecastZones:
+                - responsibleForecastZones
+              sameAs: sameAs
+              telephone: telephone
+      method: GET
+      path: /offices/{officeId}
+      path-parameters:
+        officeId:
+          docs: NWS office ID
+          type: NwsOfficeId
+      response:
+        docs: success
+        type: Office
+      source:
+        openapi: openapi/openapi.yml
+    office_headline:
+      auth: true
+      docs: Returns a specific news headline for a given NWS office
+      examples:
+        - path-parameters:
+            headlineId: headlineId
+            officeId: AKQ
+          response:
+            body:
+              '@context':
+                - key: value
+              '@id': '@id'
+              content: content
+              id: id
+              important: true
+              issuanceTime: '2024-01-15T09:30:00Z'
+              link: link
+              name: name
+              office: office
+              summary: summary
+              title: title
+      method: GET
+      path: /offices/{officeId}/headlines/{headlineId}
+      path-parameters:
+        headlineId:
+          docs: Headline record ID
+          type: string
+        officeId:
+          docs: NWS office ID
+          type: NwsOfficeId
+      response:
+        docs: success
+        type: OfficeHeadline
+      source:
+        openapi: openapi/openapi.yml
+    office_headlines:
+      auth: true
+      docs: Returns a list of news headlines for a given NWS office
+      examples:
+        - path-parameters:
+            officeId: AKQ
+          response:
+            body:
+              '@context':
+                - key: value
+              '@graph':
+                - '@id': '@id'
+                  content: content
+                  id: id
+                  important: true
+                  issuanceTime: '2024-01-15T09:30:00Z'
+                  link: link
+                  name: name
+                  office: office
+                  summary: summary
+                  title: title
+      method: GET
+      path: /offices/{officeId}/headlines
+      path-parameters:
+        officeId:
+          docs: NWS office ID
+          type: NwsOfficeId
+      response:
+        docs: success
+        type: OfficeHeadlineCollection
+      source:
+        openapi: openapi/openapi.yml
+    point:
+      auth: true
+      docs: Returns metadata about a given latitude/longitude point
+      examples:
+        - path-parameters:
+            point: point
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                '@context':
+                  - key: value
+                '@id': '@id'
+                '@type': wx:Point
+                county: county
+                cwa: AKQ
+                fireWeatherZone: fireWeatherZone
+                forecast: forecast
+                forecastGridData: forecastGridData
+                forecastHourly: forecastHourly
+                forecastOffice: forecastOffice
+                forecastZone: forecastZone
+                geometry: geometry
+                gridId: AKQ
+                gridX: 1
+                gridY: 1
+                observationStations: observationStations
+                radarStation: radarStation
+                timeZone: timeZone
+              type: Feature
+      method: GET
+      path: /points/{point}
+      path-parameters:
+        point:
+          docs: Point (latitude, longitude)
+          type: PointString
+      response:
+        docs: success
+        type: PointGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    point_stations:
+      auth: true
+      availability: deprecated
+      docs: Returns a list of observation stations for a given point
+      examples:
+        - path-parameters:
+            point: point
+          response:
+            body:
+              correlationId: 493c3a1d-f87e-407f-ae2c-24483f5aab63
+              detail: An unexpected problem has occurred.
+              instance: urn:noaa:nws:api:request:493c3a1d-f87e-407f-ae2c-24483f5aab63
+              status: 500
+              title: Unexpected Problem
+              type: urn:noaa:nws:api:UnexpectedProblem
+      method: GET
+      path: /points/{point}/stations
+      path-parameters:
+        point:
+          docs: Point (latitude, longitude)
+          type: PointString
+      response:
+        docs: An error response.
+        type: ProblemDetail
+      source:
+        openapi: openapi/openapi.yml
+    product:
+      auth: true
+      docs: Returns a specific text product
+      examples:
+        - path-parameters:
+            productId: productId
+          response:
+            body:
+              '@context':
+                - key: value
+              '@id': '@id'
+              id: id
+              issuanceTime: '2024-01-15T09:30:00Z'
+              issuingOffice: issuingOffice
+              productCode: productCode
+              productName: productName
+              productText: productText
+              wmoCollectiveId: wmoCollectiveId
+      method: GET
+      path: /products/{productId}
+      path-parameters:
+        productId:
+          docs: .
+          type: string
+      response:
+        docs: success
+        type: TextProduct
+      source:
+        openapi: openapi/openapi.yml
+    product_locations:
+      auth: true
+      docs: Returns a list of valid text product issuance locations
+      examples:
+        - response:
+            body:
+              '@context':
+                - key: value
+              locations:
+                key: value
+      method: GET
+      path: /products/locations
+      response:
+        docs: success
+        type: TextProductLocationCollection
+      source:
+        openapi: openapi/openapi.yml
+    product_types:
+      auth: true
+      docs: Returns a list of valid text product types and codes
+      examples:
+        - response:
+            body:
+              '@context':
+                - key: value
+              '@graph':
+                - productCode: productCode
+                  productName: productName
+      method: GET
+      path: /products/types
+      response:
+        docs: success
+        type: TextProductTypeCollection
+      source:
+        openapi: openapi/openapi.yml
+    products_query:
+      auth: true
+      docs: Returns a list of text products
+      examples:
+        - response:
+            body:
+              '@context':
+                - key: value
+              '@graph':
+                - '@id': '@id'
+                  id: id
+                  issuanceTime: '2024-01-15T09:30:00Z'
+                  issuingOffice: issuingOffice
+                  productCode: productCode
+                  productName: productName
+                  productText: productText
+                  wmoCollectiveId: wmoCollectiveId
+      method: GET
+      path: /products
+      request:
+        name: ProductsQueryRequest
+        query-parameters:
+          end:
+            docs: End time
+            type: optional<datetime>
+          limit:
+            docs: Limit
+            type: optional<integer>
+            validation:
+              max: 500
+              min: 1
+          location:
+            allow-multiple: true
+            docs: Location id
+            type: optional<string>
+          office:
+            allow-multiple: true
+            docs: Issuing office
+            type: optional<string>
+            validation:
+              pattern: ^[A-Z]{4}$
+          start:
+            docs: Start time
+            type: optional<datetime>
+          type:
+            allow-multiple: true
+            docs: Product code
+            type: optional<string>
+            validation:
+              pattern: ^\w{3}$
+          wmoid:
+            allow-multiple: true
+            docs: WMO id code
+            type: optional<string>
+            validation:
+              pattern: ^[A-Z]{4}\d{2}$
+      response:
+        docs: success
+        type: TextProductCollection
+      source:
+        openapi: openapi/openapi.yml
+    products_type:
+      auth: true
+      docs: Returns a list of text products of a given type
+      examples:
+        - path-parameters:
+            typeId: typeId
+          response:
+            body:
+              '@context':
+                - key: value
+              '@graph':
+                - '@id': '@id'
+                  id: id
+                  issuanceTime: '2024-01-15T09:30:00Z'
+                  issuingOffice: issuingOffice
+                  productCode: productCode
+                  productName: productName
+                  productText: productText
+                  wmoCollectiveId: wmoCollectiveId
+      method: GET
+      path: /products/types/{typeId}
+      path-parameters:
+        typeId:
+          docs: .
+          type: string
+      response:
+        docs: success
+        type: TextProductCollection
+      source:
+        openapi: openapi/openapi.yml
+    products_type_location:
+      auth: true
+      docs: >-
+        Returns a list of text products of a given type for a given issuance
+        location
+      examples:
+        - path-parameters:
+            locationId: locationId
+            typeId: typeId
+          response:
+            body:
+              '@context':
+                - key: value
+              '@graph':
+                - '@id': '@id'
+                  id: id
+                  issuanceTime: '2024-01-15T09:30:00Z'
+                  issuingOffice: issuingOffice
+                  productCode: productCode
+                  productName: productName
+                  productText: productText
+                  wmoCollectiveId: wmoCollectiveId
+      method: GET
+      path: /products/types/{typeId}/locations/{locationId}
+      path-parameters:
+        locationId:
+          docs: .
+          type: string
+        typeId:
+          docs: .
+          type: string
+      response:
+        docs: success
+        type: TextProductCollection
+      source:
+        openapi: openapi/openapi.yml
+    products_type_locations:
+      auth: true
+      docs: >-
+        Returns a list of valid text product issuance locations for a given
+        product type
+      examples:
+        - path-parameters:
+            typeId: typeId
+          response:
+            body:
+              '@context':
+                - key: value
+              locations:
+                key: value
+      method: GET
+      path: /products/types/{typeId}/locations
+      path-parameters:
+        typeId:
+          docs: .
+          type: string
+      response:
+        docs: success
+        type: TextProductLocationCollection
+      source:
+        openapi: openapi/openapi.yml
+    radar_profiler:
+      auth: true
+      docs: Returns metadata about a given radar wind profiler
+      examples:
+        - path-parameters:
+            stationId: stationId
+          query-parameters:
+            interval: P2DT12H
+            time: P1Y2M10DT2H30M/2008-05-11T15:30:00Z
+          response:
+            body:
+              key: value
+      method: GET
+      path: /radar/profilers/{stationId}
+      path-parameters:
+        stationId:
+          docs: Profiler station ID
+          type: string
+      request:
+        name: RadarProfilerRequest
+        query-parameters:
+          interval:
+            docs: Averaging interval
+            type: optional<Iso8601Duration>
+          time:
+            docs: Time interval
+            type: optional<Iso8601Interval>
+      response:
+        docs: success
+        type: unknown
+      source:
+        openapi: openapi/openapi.yml
+    radar_queue:
+      auth: true
+      docs: Returns metadata about a given radar queue
+      examples:
+        - path-parameters:
+            host: host
+          query-parameters:
+            arrived: P1Y2M10DT2H30M/2008-05-11T15:30:00Z
+            created: P1Y2M10DT2H30M/2008-05-11T15:30:00Z
+            published: P1Y2M10DT2H30M/2008-05-11T15:30:00Z
+          response:
+            body:
+              key: value
+      method: GET
+      path: /radar/queues/{host}
+      path-parameters:
+        host:
+          docs: LDM host
+          type: string
+      request:
+        name: RadarQueueRequest
+        query-parameters:
+          arrived:
+            docs: Range for arrival time
+            type: optional<Iso8601Interval>
+          created:
+            docs: Range for creation time
+            type: optional<Iso8601Interval>
+          feed:
+            docs: Originating product feed
+            type: optional<string>
+          limit:
+            docs: Record limit
+            type: optional<integer>
+            validation:
+              max: 500
+              min: 1
+          published:
+            docs: Range for publish time
+            type: optional<Iso8601Interval>
+          resolution:
+            docs: Resolution version
+            type: optional<integer>
+            validation:
+              min: 1
+          station:
+            docs: Station identifier
+            type: optional<string>
+          type:
+            docs: Record type
+            type: optional<string>
+      response:
+        docs: success
+        type: unknown
+      source:
+        openapi: openapi/openapi.yml
+    radar_server:
+      auth: true
+      docs: Returns metadata about a given radar server
+      examples:
+        - path-parameters:
+            id: id
+          response:
+            body:
+              key: value
+      method: GET
+      path: /radar/servers/{id}
+      path-parameters:
+        id:
+          docs: Server ID
+          type: string
+      request:
+        name: RadarServerRequest
+        query-parameters:
+          reportingHost:
+            docs: Show records from specific reporting host
+            type: optional<string>
+      response:
+        docs: success
+        type: unknown
+      source:
+        openapi: openapi/openapi.yml
+    radar_servers:
+      auth: true
+      docs: Returns a list of radar servers
+      examples:
+        - response:
+            body:
+              key: value
+      method: GET
+      path: /radar/servers
+      request:
+        name: RadarServersRequest
+        query-parameters:
+          reportingHost:
+            docs: Show records from specific reporting host
+            type: optional<string>
+      response:
+        docs: success
+        type: unknown
+      source:
+        openapi: openapi/openapi.yml
+    radar_station:
+      auth: true
+      docs: Returns metadata about a given radar station
+      examples:
+        - path-parameters:
+            stationId: stationId
+          response:
+            body:
+              key: value
+      method: GET
+      path: /radar/stations/{stationId}
+      path-parameters:
+        stationId:
+          docs: Radar station ID
+          type: string
+      request:
+        name: RadarStationRequest
+        query-parameters:
+          host:
+            docs: Show latency info from specific LDM host
+            type: optional<string>
+          reportingHost:
+            docs: Show RDA and latency info from specific reporting host
+            type: optional<string>
+      response:
+        docs: success
+        type: unknown
+      source:
+        openapi: openapi/openapi.yml
+    radar_station_alarms:
+      auth: true
+      docs: Returns metadata about a given radar station alarms
+      examples:
+        - path-parameters:
+            stationId: stationId
+          response:
+            body:
+              key: value
+      method: GET
+      path: /radar/stations/{stationId}/alarms
+      path-parameters:
+        stationId:
+          docs: Radar station ID
+          type: string
+      response:
+        docs: success
+        type: unknown
+      source:
+        openapi: openapi/openapi.yml
+    radar_stations:
+      auth: true
+      docs: Returns a list of radar stations
+      examples:
+        - response:
+            body:
+              key: value
+      method: GET
+      path: /radar/stations
+      request:
+        name: RadarStationsRequest
+        query-parameters:
+          host:
+            docs: Show latency info from specific LDM host
+            type: optional<string>
+          reportingHost:
+            docs: Show RDA and latency info from specific reporting host
+            type: optional<string>
+          stationType:
+            allow-multiple: true
+            docs: Limit results to a specific station type or types
+            type: optional<string>
+            validation:
+              pattern: ^[A-Za-z0-9-]+$
+      response:
+        docs: success
+        type: unknown
+      source:
+        openapi: openapi/openapi.yml
+    satellite_thumbnails:
+      auth: true
+      availability: deprecated
+      docs: >-
+        Returns a thumbnail image for a satellite region. Image services in API
+        are deprecated.
+      method: GET
+      path: /thumbnails/satellite/{area}
+      path-parameters:
+        area:
+          docs: .
+          type: SatelliteThumbnailsRequestArea
+      response:
+        docs: An image file
+        type: file
+      source:
+        openapi: openapi/openapi.yml
+    sigmet:
+      auth: true
+      docs: Returns a specific SIGMET/AIRMET
+      examples:
+        - path-parameters:
+            atsu: atsu
+            date: date
+            time: time
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                atsu: atsu
+                end: '2024-01-15T09:30:00Z'
+                fir: fir
+                id: id
+                issueTime: '2024-01-15T09:30:00Z'
+                phenomenon: phenomenon
+                sequence: sequence
+                start: '2024-01-15T09:30:00Z'
+              type: Feature
+      method: GET
+      path: /aviation/sigmets/{atsu}/{date}/{time}
+      path-parameters:
+        atsu:
+          docs: ATSU identifier
+          type: AtsuIdentifier
+        date:
+          docs: Date (YYYY-MM-DD format)
+          type: Date
+        time:
+          docs: >-
+            Time (HHMM format). This time is always specified in UTC (Zulu)
+            time.
+          type: Time
+      response:
+        docs: success
+        type: SigmetGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    sigmetQuery:
+      auth: true
+      docs: Returns a list of SIGMET/AIRMETs
+      method: GET
+      path: /aviation/sigmets
+      request:
+        name: SigmetQueryRequest
+        query-parameters:
+          atsu:
+            docs: ATSU identifier
+            type: optional<AtsuIdentifier>
+          date:
+            docs: Date (YYYY-MM-DD format)
+            type: optional<Date>
+          end:
+            docs: End time
+            type: optional<datetime>
+          sequence:
+            docs: SIGMET sequence number
+            type: optional<SigmetSequenceNumber>
+          start:
+            docs: Start time
+            type: optional<datetime>
+      response:
+        docs: success
+        type: SigmetCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    sigmetsByATSU:
+      auth: true
+      docs: Returns a list of SIGMET/AIRMETs for the specified ATSU
+      method: GET
+      path: /aviation/sigmets/{atsu}
+      path-parameters:
+        atsu:
+          docs: ATSU identifier
+          type: AtsuIdentifier
+      response:
+        docs: success
+        type: SigmetCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    sigmetsByATSUByDate:
+      auth: true
+      docs: >-
+        Returns a list of SIGMET/AIRMETs for the specified ATSU for the
+        specified date
+      method: GET
+      path: /aviation/sigmets/{atsu}/{date}
+      path-parameters:
+        atsu:
+          docs: ATSU identifier
+          type: AtsuIdentifier
+        date:
+          docs: Date (YYYY-MM-DD format)
+          type: Date
+      response:
+        docs: success
+        type: SigmetCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    station_observation_latest:
+      auth: true
+      docs: Returns the latest observation for a station
+      examples:
+        - path-parameters:
+            stationId: stationId
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                '@context':
+                  - key: value
+                '@id': '@id'
+                '@type': wx:ObservationStation
+                barometricPressure:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                cloudLayers:
+                  - amount: OVC
+                    base: {}
+                dewpoint:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                elevation:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                geometry: geometry
+                heatIndex:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                icon: icon
+                maxTemperatureLast24Hours:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                minTemperatureLast24Hours:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                precipitationLast3Hours:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                precipitationLast6Hours:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                precipitationLastHour:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                presentWeather:
+                  - rawString: rawString
+                    weather: fog_mist
+                rawMessage: rawMessage
+                relativeHumidity:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                seaLevelPressure:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                station: station
+                temperature:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                textDescription: textDescription
+                timestamp: '2024-01-15T09:30:00Z'
+                visibility:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                windChill:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                windDirection:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                windGust:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                windSpeed:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+              type: Feature
+      method: GET
+      path: /stations/{stationId}/observations/latest
+      path-parameters:
+        stationId:
+          docs: Observation station ID
+          type: string
+      request:
+        name: StationObservationLatestRequest
+        query-parameters:
+          require_qc:
+            docs: Require QC
+            type: optional<boolean>
+      response:
+        docs: An observation record.
+        type: ObservationGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    station_observation_list:
+      auth: true
+      docs: Returns a list of observations for a given station
+      examples:
+        - path-parameters:
+            stationId: stationId
+          response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              type: FeatureCollection
+      method: GET
+      path: /stations/{stationId}/observations
+      path-parameters:
+        stationId:
+          docs: Observation station ID
+          type: string
+      request:
+        name: StationObservationListRequest
+        query-parameters:
+          end:
+            docs: End time
+            type: optional<datetime>
+          limit:
+            docs: Limit
+            type: optional<integer>
+            validation:
+              max: 500
+              min: 1
+          start:
+            docs: Start time
+            type: optional<datetime>
+      response:
+        docs: A collection of observation records.
+        type: ObservationCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    station_observation_time:
+      auth: true
+      docs: Returns a single observation.
+      examples:
+        - path-parameters:
+            stationId: stationId
+            time: '2024-01-15T09:30:00Z'
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                '@context':
+                  - key: value
+                '@id': '@id'
+                '@type': wx:ObservationStation
+                barometricPressure:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                cloudLayers:
+                  - amount: OVC
+                    base: {}
+                dewpoint:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                elevation:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                geometry: geometry
+                heatIndex:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                icon: icon
+                maxTemperatureLast24Hours:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                minTemperatureLast24Hours:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                precipitationLast3Hours:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                precipitationLast6Hours:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                precipitationLastHour:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                presentWeather:
+                  - rawString: rawString
+                    weather: fog_mist
+                rawMessage: rawMessage
+                relativeHumidity:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                seaLevelPressure:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                station: station
+                temperature:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                textDescription: textDescription
+                timestamp: '2024-01-15T09:30:00Z'
+                visibility:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                windChill:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                windDirection:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                windGust:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+                windSpeed:
+                  maxValue: 1.1
+                  minValue: 1.1
+                  qualityControl: Z
+                  unitCode: unitCode
+                  value: 1.1
+              type: Feature
+      method: GET
+      path: /stations/{stationId}/observations/{time}
+      path-parameters:
+        stationId:
+          docs: Observation station ID
+          type: string
+        time:
+          docs: Timestamp of requested observation
+          type: datetime
+      response:
+        docs: An observation record.
+        type: ObservationGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    taf:
+      auth: true
+      docs: Returns a single Terminal Aerodrome Forecast.
+      examples:
+        - path-parameters:
+            date: date
+            stationId: stationId
+            time: time
+      method: GET
+      path: /stations/{stationId}/tafs/{date}/{time}
+      path-parameters:
+        date:
+          docs: Date (YYYY-MM-DD format)
+          type: Date
+        stationId:
+          docs: Observation station ID
+          type: string
+        time:
+          docs: >-
+            Time (HHMM format). This time is always specified in UTC (Zulu)
+            time.
+          type: Time
+      source:
+        openapi: openapi/openapi.yml
+    tafs:
+      auth: true
+      docs: Returns Terminal Aerodrome Forecasts for the specified airport station.
+      examples:
+        - path-parameters:
+            stationId: stationId
+          response:
+            body:
+              key: value
+      method: GET
+      path: /stations/{stationId}/tafs
+      path-parameters:
+        stationId:
+          docs: Observation station ID
+          type: string
+      response:
+        docs: success
+        type: unknown
+      source:
+        openapi: openapi/openapi.yml
+    zone:
+      auth: true
+      docs: Returns metadata about a given zone
+      examples:
+        - path-parameters:
+            type: land
+            zoneId: zoneId
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                '@context':
+                  - key: value
+                '@id': '@id'
+                '@type': wx:Zone
+                awipsLocationIdentifier: awipsLocationIdentifier
+                cwa:
+                  - AKQ
+                effectiveDate: '2024-01-15T09:30:00Z'
+                expirationDate: '2024-01-15T09:30:00Z'
+                forecastOffice: forecastOffice
+                forecastOffices:
+                  - forecastOffices
+                geometry: geometry
+                gridIdentifier: gridIdentifier
+                id: id
+                name: name
+                observationStations:
+                  - observationStations
+                radarStation: radarStation
+                state: AL
+                timeZone:
+                  - timeZone
+                type: land
+              type: Feature
+      method: GET
+      path: /zones/{type}/{zoneId}
+      path-parameters:
+        type:
+          docs: Zone type
+          type: NwsZoneType
+        zoneId:
+          docs: NWS public zone/county identifier
+          type: NwsZoneId
+      request:
+        name: ZoneRequest
+        query-parameters:
+          effective:
+            docs: Effective date/time
+            type: optional<datetime>
+      response:
+        docs: success
+        type: ZoneGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    zone_forecast:
+      auth: true
+      docs: Returns the current zone forecast for a given zone
+      examples:
+        - path-parameters:
+            type: type
+            zoneId: zoneId
+          response:
+            body:
+              '@context':
+                - key: value
+              geometry:
+                bbox:
+                  - 1.1
+                coordinates:
+                  - - - - 1.1
+                type: MultiPolygon
+              id: id
+              properties:
+                '@context':
+                  - key: value
+                geometry: geometry
+                periods:
+                  - detailedForecast: detailedForecast
+                    name: This Afternoon
+                    number: 1
+                updated: '2024-01-15T09:30:00Z'
+                zone: zone
+              type: Feature
+      method: GET
+      path: /zones/{type}/{zoneId}/forecast
+      path-parameters:
+        type:
+          docs: Zone type
+          type: string
+        zoneId:
+          docs: NWS public zone/county identifier
+          type: NwsZoneId
+      response:
+        docs: success
+        type: ZoneForecastGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    zone_list:
+      auth: true
+      docs: Returns a list of zones
+      examples:
+        - response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              type: FeatureCollection
+      method: GET
+      path: /zones
+      request:
+        name: ZoneListRequest
+        query-parameters:
+          area:
+            allow-multiple: true
+            docs: State/marine area code
+            type: optional<AreaCode>
+          effective:
+            docs: Effective date/time
+            type: optional<datetime>
+          id:
+            allow-multiple: true
+            docs: Zone ID (forecast or county)
+            type: optional<NwsZoneId>
+          include_geometry:
+            docs: Include geometry in results (true/false)
+            type: optional<boolean>
+          limit:
+            docs: Limit
+            type: optional<integer>
+            validation:
+              min: 1
+          point:
+            docs: Point (latitude,longitude)
+            type: optional<PointString>
+          region:
+            allow-multiple: true
+            docs: Region code
+            type: optional<RegionCode>
+          type:
+            allow-multiple: true
+            docs: Zone type
+            type: optional<NwsZoneType>
+      response:
+        docs: success
+        type: ZoneCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    zone_list_type:
+      auth: true
+      docs: Returns a list of zones of a given type
+      examples:
+        - path-parameters:
+            type: land
+          response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              type: FeatureCollection
+      method: GET
+      path: /zones/{type}
+      path-parameters:
+        type:
+          docs: Zone type
+          type: NwsZoneType
+      request:
+        name: ZoneListTypeRequest
+        query-parameters:
+          area:
+            allow-multiple: true
+            docs: State/marine area code
+            type: optional<AreaCode>
+          effective:
+            docs: Effective date/time
+            type: optional<datetime>
+          id:
+            allow-multiple: true
+            docs: Zone ID (forecast or county)
+            type: optional<NwsZoneId>
+          include_geometry:
+            docs: Include geometry in results (true/false)
+            type: optional<boolean>
+          limit:
+            docs: Limit
+            type: optional<integer>
+            validation:
+              min: 1
+          point:
+            docs: Point (latitude,longitude)
+            type: optional<PointString>
+          region:
+            allow-multiple: true
+            docs: Region code
+            type: optional<RegionCode>
+          type:
+            allow-multiple: true
+            docs: Zone type
+            type: optional<NwsZoneType>
+      response:
+        docs: success
+        type: ZoneCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    zone_obs:
+      auth: true
+      docs: Returns a list of observations for a given zone
+      examples:
+        - path-parameters:
+            zoneId: zoneId
+          response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              type: FeatureCollection
+      method: GET
+      path: /zones/forecast/{zoneId}/observations
+      path-parameters:
+        zoneId:
+          docs: NWS public zone/county identifier
+          type: NwsZoneId
+      request:
+        name: ZoneObsRequest
+        query-parameters:
+          end:
+            docs: End date/time
+            type: optional<datetime>
+          limit:
+            docs: Limit
+            type: optional<integer>
+            validation:
+              max: 500
+              min: 1
+          start:
+            docs: Start date/time
+            type: optional<datetime>
+      response:
+        docs: success
+        type: ObservationCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+    zone_stations:
+      auth: true
+      docs: Returns a list of observation stations for a given zone
+      examples:
+        - path-parameters:
+            zoneId: zoneId
+          response:
+            body:
+              '@context':
+                - key: value
+              features:
+                - {}
+              observationStations:
+                - observationStations
+              pagination:
+                next: next
+              type: FeatureCollection
+      method: GET
+      path: /zones/forecast/{zoneId}/stations
+      path-parameters:
+        zoneId:
+          docs: NWS public zone/county identifier
+          type: NwsZoneId
+      request:
+        name: ZoneStationsRequest
+        query-parameters:
+          cursor:
+            docs: Pagination cursor
+            type: optional<string>
+          limit:
+            default: 500
+            docs: Limit
+            type: optional<integer>
+            validation:
+              max: 500
+              min: 1
+      response:
+        docs: A collection of observation stations.
+        type: ObservationStationCollectionGeoJson
+      source:
+        openapi: openapi/openapi.yml
+  source:
+    openapi: openapi/openapi.yml
