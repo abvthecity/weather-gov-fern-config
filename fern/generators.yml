@@ -4,10 +4,14 @@ groups:
     generators:
       - name: fernapi/fern-typescript-node-sdk
         version: 0.46.0
+        config:
+          noSerdeLayer: true
         output:
-          location: npm
-          package-name: weather-gov-sdk
-          token: ${NPM_TOKEN}
+          location: local-file-system
+          path: ../sdks/typescript
+          # location: npm
+          # package-name: weather-gov-sdk
+          # token: ${NPM_TOKEN}
         
 # api:
 #   path: definition/__package__.yml
